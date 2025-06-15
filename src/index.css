@@ -1,3 +1,21 @@
+/* index.css */
+:root {
+  --midnight-blue: #1A1A2E;
+  --neon-blue: #0F3460;
+  --pure-white: #F5F5F5;
+  --bright-blue: #4FC3F7;
+  --editor-bg: #1A1A2E;
+  --editor-border: #0F3460;
+  --toolbar-bg: #0F3460;
+  --input-bg: #16213E;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--midnight-blue);
+  color: var(--pure-white);
+}
 *{
     margin: 0;
     padding: 0;
