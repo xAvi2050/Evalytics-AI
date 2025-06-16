@@ -111,7 +111,7 @@ const CodeIDE = () => {
     <div className="code-ide-container">
       <div className="ide-toolbar">
 
-        <button id="homebtn" onClick={() => navigate('/')}><img src="../public/eai.png" width={50}/></button>
+        <button id="homebtn" onClick={() => navigate('/')}><img src="/eai.png" width={50}/></button>
 
         <select onChange={(e) => setLanguage(Number(e.target.value))} value={language}>
           {languageOptions.map((lang) => (
