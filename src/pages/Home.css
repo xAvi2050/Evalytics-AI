@@ -154,7 +154,8 @@ h1, h2, h3, h4 {
 }
 
 .signup-btn:hover {
-  background-color: #b7b5b5;
+  background-color: #7f8c8d;
+  color: var(--light-bg);
 }
 
 .mobile-menu-btn {
