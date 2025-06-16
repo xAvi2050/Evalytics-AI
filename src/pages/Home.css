@@ -154,7 +154,7 @@ h1, h2, h3, h4 {
 }
 
 .signup-btn:hover {
-  background-color: #7f8c8d;
+  background-color: #888888;
   color: var(--light-bg);
 }
 

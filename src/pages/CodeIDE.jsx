@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Editor, { useMonaco } from '@monaco-editor/react';
 import axios from 'axios';
+import { themeOptions, registerMonacoThemes } from '../assets/monacoThemes';
 import './CodeIDE.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,7 +25,23 @@ const languageOptions = [
   { id: 93, name: 'Swift (5.8.1)', monacoLang: 'swift', version: '5.8.1', sample: 'print("Hello, World!")' },
 ];
 
-const themes = ['vs-dark', 'light', 'vs', 'hc-black', 'evalytics-dark'];
+const themes = [
+  'vs-dark',            
+  'vs-light',           
+  'light',              
+  'vs',                 
+  'hc-black',           
+  'hc-light',           
+  'solarized-dark',     
+  'solarized-light',    
+  'monokai',            
+  'dracula',            
+  'github-dark',        
+  'github-light',       
+  'one-dark-pro',       
+  'nord',               
+  'evalytics-dark'      
+];
 const fonts = ['Fira Code', 'JetBrains Mono', 'Monaco', 'Courier New', 'Ubuntu Mono'];
 
 const CodeIDE = () => {
@@ -34,6 +51,7 @@ const CodeIDE = () => {
   const [font, setFont] = useState('Fira Code');
   const [fontSize, setFontSize] = useState(14);
   const [output, setOutput] = useState('');
+  const [userInput, setUserInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const monaco = useMonaco();
   const navigate = useNavigate();
@@ -44,33 +62,28 @@ const CodeIDE = () => {
   }, [language]);
 
   useEffect(() => {
-    if (monaco) {
-      monaco.editor.defineTheme('evalytics-dark', {
-        base: 'vs-dark',
-        inherit: true,
-        rules: [
-          { token: 'comment', foreground: '7C7C7C', fontStyle: 'italic' },
-          { token: 'keyword', foreground: 'FF5370' },
-          { token: 'string', foreground: 'C3E88D' },
-          { token: 'variable', foreground: 'F78C6C' },
-        ],
-        colors: {
-          'editor.background': '#1A1A2E',
-          'editor.lineHighlightBackground': '#2E2E3E',
-          'editorCursor.foreground': '#FFFFFF',
-        },
-      });
-    }
-  }, [monaco]);
+  if (monaco) {
+    registerMonacoThemes(monaco);
+  }
+}, [monaco]);
+
 
   const runCode = async () => {
     setIsSubmitting(true);
     setOutput('⏳ Running...');
     try {
       const { data } = await axios.post(
-        'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false',
-        { source_code: code, language_id: language },
+        'https://judge0-ce.p.rapidapi.com/submissions',
         {
+          source_code: code,
+          language_id: language,
+          stdin: userInput,
+        },
+        {
+          params: {
+            base64_encoded: 'false',
+            wait: 'true', // Changed to wait for completion
+          },
           headers: {
             'x-rapidapi-key': import.meta.env.VITE_JUDGE0_API_KEY,
             'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
@@ -79,27 +92,17 @@ const CodeIDE = () => {
         }
       );
 
-      const poll = async () => {
-        const res = await axios.get(
-          `https://judge0-ce.p.rapidapi.com/submissions/${data.token}?base64_encoded=false`,
-          {
-            headers: {
-              'x-rapidapi-key': import.meta.env.VITE_JUDGE0_API_KEY,
-              'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
-            },
-          }
-        );
-        if (res.data.status.id <= 2) {
-          setTimeout(poll, 1000);
-        } else {
-          setOutput(res.data.stdout || res.data.stderr || res.data.compile_output || 'No output');
-          setIsSubmitting(false);
-        }
-      };
-
-      poll();
+      // Handle the response directly since we're waiting for completion
+      const result = data;
+      setOutput(
+        result.stdout || 
+        result.stderr || 
+        result.compile_output || 
+        (result.message ? `Error: ${result.message}` : 'No output')
+      );
     } catch (err) {
       setOutput(`❌ Error: ${err.message}`);
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -107,7 +110,8 @@ const CodeIDE = () => {
   return (
     <div className="code-ide-container">
       <div className="ide-toolbar">
-        <button onClick={() => navigate('/')}>← Home</button>
+
+        <button id="homebtn" onClick={() => navigate('/')}><img src="../public/eai.png" width={50}/></button>
 
         <select onChange={(e) => setLanguage(Number(e.target.value))} value={language}>
           {languageOptions.map((lang) => (
@@ -116,16 +120,17 @@ const CodeIDE = () => {
             </option>
           ))}
         </select>
-        
+
         <span className="lang-version">
           {languageOptions.find((l) => l.id === language)?.version}
         </span>
 
         <select onChange={(e) => setTheme(e.target.value)} value={theme}>
-          {themes.map((t) => (
+          {themeOptions.map((t) => (
             <option key={t} value={t}>{t}</option>
           ))}
         </select>
+
 
         <select onChange={(e) => setFont(e.target.value)} value={font}>
           {fonts.map((f) => (
@@ -141,10 +146,9 @@ const CodeIDE = () => {
           onChange={(e) => setFontSize(Number(e.target.value))}
         />
 
-        <button onClick={runCode} disabled={isSubmitting}>
+        <button id='runbtn' onClick={runCode} disabled={isSubmitting}>
           {isSubmitting ? 'Running...' : '▷ Run Code'}
         </button>
-
       </div>
 
       <div className="editor-output-wrapper">
@@ -163,7 +167,18 @@ const CodeIDE = () => {
             }}
           />
         </div>
+
         <div className="code-output">
+          <h2>Terminal</h2>
+          <hr />
+          <h3>Input</h3>
+          <textarea
+            rows="5"
+            placeholder="Enter input here (e.g., John)"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+          />
+
           <h3>Output</h3>
           <pre>{output}</pre>
         </div>
