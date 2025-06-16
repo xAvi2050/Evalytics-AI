@@ -2,7 +2,7 @@
 :root {
   --primary-dark: #1A1A2E;
   --primary-blue: #0F3460;
-  --accent-blue: #3498db;
+  --accent-blue: #2998e2;
   --light-bg: #F5F5F5;
   --white: #FFFFFF;
   --text-dark: #333333;
@@ -16,7 +16,7 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Raleway', sans-serif;
   color: var(--text-dark);
   line-height: 1.4;
 }
@@ -126,6 +126,7 @@ h1, h2, h3, h4 {
 .auth-buttons {
   display: flex;
   gap: 1rem;
+  align-items: center;
 }
 
 .login-btn {
@@ -134,6 +135,7 @@ h1, h2, h3, h4 {
   border: 1px solid var(--white);
   padding: 0.5rem 1rem;
   border-radius: 4px;
+  text-decoration: none;
 }
 
 .signup-btn {
@@ -142,6 +144,7 @@ h1, h2, h3, h4 {
   padding: 0.5rem 1rem;
   border-radius: 4px;
   font-weight: 500;
+  text-decoration: none;
 }
 
 .mobile-menu-btn {

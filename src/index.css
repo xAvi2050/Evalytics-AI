@@ -1,23 +1,34 @@
-/* index.css */
+/* src/index.css */
 :root {
-  --midnight-blue: #1A1A2E;
-  --neon-blue: #0F3460;
-  --pure-white: #F5F5F5;
-  --bright-blue: #4FC3F7;
-  --editor-bg: #1A1A2E;
-  --editor-border: #0F3460;
-  --toolbar-bg: #0F3460;
-  --input-bg: #16213E;
+  --light-primary: #F5F5F5;
+  --light-secondary: #FFFFFF;
+  --light-accent: #0F3460;
+  --light-text: #1A1A2E;
+
+  --dark-primary: #1A1A2E;
+  --dark-secondary: #0F3460;
+  --dark-accent: #4FC3F7;
+  --dark-text: #F5F5F5;
+
+  --bg-primary: var(--light-primary);
+  --bg-secondary: var(--light-secondary);
+  --accent: var(--light-accent);
+  --text: var(--light-text);
+
+  --pure-white: #FFFFFF;
+  --primary-dark: #1A1A2E;
+  --primary-blue: #0F3460;
+}
+
+[data-theme="dark"] {
+  --bg-primary: var(--dark-primary);
+  --bg-secondary: var(--dark-secondary);
+  --accent: var(--dark-accent);
+  --text: var(--dark-text);
 }
 
 body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background-color: var(--midnight-blue);
-  color: var(--pure-white);
-}
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  background-color: var(--bg-primary);
+  color: var(--text);
+  transition: background-color 0.5s ease, color 0.5s ease;
 }

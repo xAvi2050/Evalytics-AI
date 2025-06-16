@@ -21,16 +21,16 @@ useEffect(() => {
   }, []);
 
   const [code, setCode] = useState(`def reverse_string(s):\n    return s[::-1]\n\nprint(reverse_string("hello"))`);
-const [language, setLanguage] = useState(71); // Python by default
-const [output, setOutput] = useState('');
-const [isSubmitting, setIsSubmitting] = useState(false);
+  const [language, setLanguage] = useState(71); // Python by default
+  const [output, setOutput] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-const runCode = async () => {
-  setIsSubmitting(true);
-  setOutput('⏳ Running...');
+  const runCode = async () => {
+    setIsSubmitting(true);
+    setOutput('⏳ Running...');
 
-  try {
-    const { data } = await axios.post(
+    try {
+      const { data } = await axios.post(
       'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false',
       { source_code: code, language_id: language },
       {
@@ -68,14 +68,13 @@ const runCode = async () => {
   }
 };
 
-
   return (
     <div className="home-container">
       {/* 1. Header / Navigation Bar */}
       <header className="navbar">
         <div className="nav-container">
           <div className="logo">
-            <span className="logo-icon">💻</span>
+            <img src="/eai.png" alt="Logo" className="logo-icon" width={100} />
             <span>Evalytics-AI</span>
           </div>
           
@@ -92,7 +91,7 @@ const runCode = async () => {
             <Link to="/login" className="login-btn">Login</Link>
             <Link to="/signup" className="signup-btn">Sign Up</Link>
           </div>
-          
+
           <button className="mobile-menu-btn">☰</button>
         </div>
       </header>

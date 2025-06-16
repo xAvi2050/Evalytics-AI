@@ -1,0 +1,52 @@
+/* src/utils/ThemeToggle.css */
+.theme-toggle {
+  --toggle-size: 50px;
+  --handle-size: 20px;
+  --padding: 3px;
+
+  position: relative;
+  width: var(--toggle-size);
+  height: calc(var(--handle-size) + 2 * var(--padding));
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  background: var(--primary-blue);
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.theme-toggle.dark {
+  background: var(--primary-dark);
+}
+
+.toggle-handle {
+  position: absolute;
+  left: var(--padding);
+  width: var(--handle-size);
+  height: var(--handle-size);
+  border-radius: 50%;
+  background: var(--pure-white);
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle.dark .toggle-handle {
+  transform: translateX(calc(var(--toggle-size) - var(--handle-size) - 2 * var(--padding)));
+}
+
+.icon {
+  color: var(--accent-blue);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  filter: brightness(1.1);
+}
+
+.theme-toggle:focus {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
