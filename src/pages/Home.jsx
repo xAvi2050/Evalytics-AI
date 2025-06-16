@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Lottie from 'react-lottie';
+import animationData from '../assets/animation.json';
 import './Home.css';
 
 export default function Home() {
@@ -19,6 +21,15 @@ useEffect(() => {
     }, 50);
     return () => clearInterval(typingInterval);
   }, []);
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
 
   const [code, setCode] = useState(`def reverse_string(s):\n    return s[::-1]\n\nprint(reverse_string("hello"))`);
   const [language, setLanguage] = useState(71); // Python by default
@@ -111,8 +122,8 @@ useEffect(() => {
             <Link to="/sample-test" className="cta-secondary">Take a Sample Test</Link>
           </div>
         </div>
-        <div className="hero-animation">
-          {/* Code animation background would go here */}
+        <div className="lottie-container" style={{ maxWidth: 600, margin: '0 auto' }}>
+          <Lottie options={defaultOptions}/>
         </div>
       </section>
 
@@ -212,7 +223,7 @@ useEffect(() => {
           </div>
 
           <textarea
-          className="code-editor-textarea"
+          className="code-editor-container"
           value={code}
           onChange={(e) => setCode(e.target.value)}
           />

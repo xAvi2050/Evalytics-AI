@@ -136,6 +136,11 @@ h1, h2, h3, h4 {
   padding: 0.5rem 1rem;
   border-radius: 4px;
   text-decoration: none;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #0091ff;
 }
 
 .signup-btn {
@@ -145,6 +150,11 @@ h1, h2, h3, h4 {
   border-radius: 4px;
   font-weight: 500;
   text-decoration: none;
+  transition: 0.3s;
+}
+
+.signup-btn:hover {
+  background-color: #b7b5b5;
 }
 
 .mobile-menu-btn {
@@ -203,14 +213,11 @@ h1, h2, h3, h4 {
   margin-top: 2rem;
 }
 
-.hero-animation {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  background: url('code-bg.svg') center/cover no-repeat;
-  opacity: 0.2;
+.lottie-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
 }
 
 /* 3. Key Offerings */
@@ -371,6 +378,7 @@ h1, h2, h3, h4 {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .problem-statement {
