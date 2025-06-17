@@ -1,11 +1,64 @@
+.auth-page {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.auth-half {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.form-side {
+  background-color: var(--light-primary);
+  flex-direction: column;
+}
+
+.animation-side {
+  background-color: var(--light-primary);
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.animation-side .lottie {
+  max-width: 400px;
+  width: 100%;
+}
+
+.switch-link {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.switch-link a {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.switch-link a:hover {
+  text-decoration: underline;
+}
+
 .auth-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 3rem;
-  min-height: 100vh;
-  background: linear-gradient(120deg, #e0eafc, #cfdef3);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .auth-title {
@@ -16,7 +69,6 @@
 
 .auth-form {
   width: 100%;
-  max-width: 400px;
   display: flex;
   flex-direction: column;
 }
@@ -44,6 +96,7 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s ease, transform 0.2s ease;
+  margin-top: 0.5rem;
 }
 
 .auth-button:hover {
@@ -60,12 +113,14 @@
   border: 1px solid #e0b4b4;
   border-radius: 6px;
   font-size: 0.95rem;
+  text-align: center;
 }
 
 .password-strength {
   font-size: 0.9rem;
   margin-top: -0.5rem;
   margin-bottom: 1rem;
+  font-weight: 500;
 }
 
 .password-strength.weak {

@@ -73,7 +73,7 @@ export default function Dashboard() {
             className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setShowMobileMenu(false)}
           >
-            <span>🏠</span> Dashboard
+            <span><i class="fa-solid fa-house"></i></span> Dashboard
           </Link>
           
           <Link 
@@ -81,7 +81,7 @@ export default function Dashboard() {
             className={`nav-item ${activeTab === 'practice' ? 'active' : ''}`}
             onClick={() => setShowMobileMenu(false)}
           >
-            <span>💻</span> Practice IDE
+            <span><i class="fa-solid fa-laptop-code"></i></span> Practice IDE
           </Link>
           
           <Link 
@@ -89,7 +89,7 @@ export default function Dashboard() {
             className={`nav-item ${activeTab === 'tests' ? 'active' : ''}`}
             onClick={() => setShowMobileMenu(false)}
           >
-            <span>🧪</span> Tests
+            <span><i class="fa-solid fa-vial"></i></span> Tests
           </Link>
           
           <Link 
@@ -97,7 +97,7 @@ export default function Dashboard() {
             className={`nav-item ${activeTab === 'exams' ? 'active' : ''}`}
             onClick={() => setShowMobileMenu(false)}
           >
-            <span>📝</span> Full Exams
+            <span><i class="fa-solid fa-pen"></i></span> Full Exams
           </Link>
           
           <Link 
@@ -105,7 +105,7 @@ export default function Dashboard() {
             className={`nav-item ${activeTab === 'results' ? 'active' : ''}`}
             onClick={() => setShowMobileMenu(false)}
           >
-            <span>📊</span> My Results
+            <span><i class="fa-solid fa-square-poll-vertical"></i></span> My Results
           </Link>
           
           <Link 
@@ -113,7 +113,7 @@ export default function Dashboard() {
             className={`nav-item ${activeTab === 'certificates' ? 'active' : ''}`}
             onClick={() => setShowMobileMenu(false)}
           >
-            <span>🎓</span> Certificates
+            <span><i class="fa-solid fa-award"></i></span> Certificates
           </Link>
           
           <Link 
@@ -121,7 +121,7 @@ export default function Dashboard() {
             className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setShowMobileMenu(false)}
           >
-            <span>⚙️</span> Settings
+            <span><i class="fa-solid fa-gear"></i></span> Settings
           </Link>
           
           <Link 
@@ -129,7 +129,7 @@ export default function Dashboard() {
             className="nav-item logout"
             onClick={() => setShowMobileMenu(false)}
           >
-            <span>🚪</span> Logout
+            <span><i class="fa-solid fa-right-from-bracket"></i></span> Logout
           </Link>
         </nav>
 
@@ -146,7 +146,7 @@ export default function Dashboard() {
           <>
             {/* Welcome Header */}
             <header className="dashboard-header">
-              <h1>👋 Hello, Shubham!</h1>
+              <h1><i class="fa-solid fa-hand"></i> Hello, Shubham!</h1>
               <div className="user-stats">
                 <span>XP: 4200</span>
                 <span>Rank: #34</span>

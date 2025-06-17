@@ -1,5 +1,6 @@
 /* Base Styles */
 :root {
+  --light-primary: #F5F5F5;
   --primary-dark: #1A1A2E;
   --primary-blue: #0F3460;
   --accent-blue: #2998e2;
@@ -154,8 +155,8 @@ h1, h2, h3, h4 {
 }
 
 .signup-btn:hover {
-  background-color: #888888;
-  color: var(--light-bg);
+  background-color: #16ddf3;
+  color: var(--primary-dark);
 }
 
 .mobile-menu-btn {
@@ -179,9 +180,18 @@ h1, h2, h3, h4 {
 }
 
 .hero-content {
-  max-width: 600px;
+  max-width: 500px;
   z-index: 2;
+  margin-right: 250px;
+  margin-left: 50px;
 }
+
+@media (max-width: 768px) {
+  .hero-content {
+    margin-right: 0;
+    margin-left: 0;
+  }
+} 
 
 .hero-title {
   font-size: 3rem;
@@ -218,7 +228,7 @@ h1, h2, h3, h4 {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
+  /* padding: 2rem; */
 }
 
 /* 3. Key Offerings */
@@ -370,7 +380,13 @@ h1, h2, h3, h4 {
 /* 6. Live Demo Section */
 .demo-section {
   padding: 5rem 2rem;
-  background: var(--white);
+  background: var(--primary-blue);
+}
+
+.demo-section .section-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--light-primary);
 }
 
 .code-editor-container {
@@ -388,14 +404,23 @@ h1, h2, h3, h4 {
   padding: 1rem;
 }
 
-.code-editor {
-  background: #1e1e1e;
-  color: #d4d4d4;
+.demo-section .code-editor-container .code-editor {
+  background: var(--light-primary);
+  color: var(--primary-dark);
   padding: 1rem;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.9rem;
-  min-height: 200px;
+  min-height: 300px;
+  width: 100%;
+  border: none;
+  resize: vertical;
+  outline: none;
+  line-height: 1.5;
+  box-sizing: border-box;
+  border-bottom: 1px solid #333;
+  border-radius: 0;
 }
+
 
 .editor-actions {
   display: flex;
@@ -569,7 +594,16 @@ h1, h2, h3, h4 {
   background: var(--light-bg);
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 1rem;
+}
+
+.tech-item i{
+  font-size: 1.2rem;
+}
+
+.tech-item:hover {
+  background: var(--primary-blue);
+  color: var(--white);
 }
 
 /* 11. Final CTA */
@@ -706,4 +740,11 @@ h1, h2, h3, h4 {
   .steps-container {
     flex-direction: column;
   }
+}
+
+.language-icon i {
+  font-size: 3rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  display: block;
 }

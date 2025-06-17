@@ -5,6 +5,8 @@ import Lottie from 'react-lottie';
 import animationData from '../assets/animation.json';
 import './Home.css';
 
+
+
 export default function Home() {
   const [typedText, setTypedText] = useState('');
   const fullText = "Level Up with AI-Based Code Testing & Exams";
@@ -132,21 +134,21 @@ useEffect(() => {
         <h2 className="section-title">Master Coding with Our AI Platform</h2>
         <div className="offerings-grid">
           <div className="offering-card">
-            <div className="offering-icon">🧠</div>
+            <div className="offering-icon"><i class="fa-solid fa-brain"></i></div>
             <h3>Coding Language Tests</h3>
             <p>Timed tests in Python, Java, C++, etc. Auto-graded with explanations. Beginner to advanced levels.</p>
             <Link to="/tests" className="offering-btn">Try Now</Link>
           </div>
           
           <div className="offering-card">
-            <div className="offering-icon">👨‍💻</div>
+            <div className="offering-icon"><i class="fa-solid fa-laptop-code"></i></div>
             <h3>Practice IDE</h3>
             <p>Real-time online editor with hints & test cases. AI hints and code feedback. Save and track your practice history.</p>
             <Link to="/practice" className="offering-btn">Explore</Link>
           </div>
           
           <div className="offering-card">
-            <div className="offering-icon">🧾</div>
+            <div className="offering-icon"><i class="fa-solid fa-scroll"></i></div>
             <h3>Full Exam Mode</h3>
             <p>Exam interface simulating real interview tests. Proctoring support & final reports. Certification on completion.</p>
             <Link to="/exams" className="offering-btn">Learn More</Link>
@@ -194,25 +196,34 @@ useEffect(() => {
       <section className="languages-section">
         <h2 className="section-title">Practice & Test in Your Favorite Language</h2>
         <div className="languages-grid">
-          {['Python', 'Java', 'C++', 'C', 'JavaScript', 'SQL'].map((lang) => (
-            <div key={lang} className="language-card">
+          {[
+            { name: 'Python', iconClass: 'bxl-python' },
+            { name: 'Java', iconClass: 'bxl-java' },
+            { name: 'C++', iconClass: 'bxl-c-plus-plus' }, 
+            { name: 'C', iconClass: 'fa-solid fa-c' }, 
+            { name: 'JavaScript', iconClass: 'bxl-javascript' },
+            { name: 'SQL', iconClass: 'bxs-data' },
+          ].map((lang) => (
+            <div key={lang.name} className="language-card">
               <div className="language-icon">
-                {lang === 'Python' ? '🐍' : 
-                 lang === 'Java' ? '☕' : 
-                 lang === 'C++' ? '💠' : 
-                 lang === 'C' ? '💻' : 
-                 lang === 'JavaScript' ? '🟨' : '🐘'}
+                {lang.name === 'C' ? (
+                  <i className={lang.iconClass}></i> // ✅ Font Awesome icon
+                ) : (
+                  <i className={`bx ${lang.iconClass}`}></i> // ✅ Boxicons
+                )}
               </div>
-              <h3>{lang}</h3>
+              <h3>{lang.name}</h3>
               <div className="language-actions">
-                <Link to={`/practice/${lang.toLowerCase()}`}>Practice Mode</Link>
-                <Link to={`/tests/${lang.toLowerCase()}`}>Test Mode</Link>
+                <Link to={`/practice/${lang.name.toLowerCase()}`}>Practice Mode</Link>
+                <Link to={`/tests/${lang.name.toLowerCase()}`}>Test Mode</Link>
               </div>
             </div>
           ))}
         </div>
         <p className="coming-soon">+ More languages coming soon</p>
       </section>
+
+
 
       {/* 6. Live Demo Section */}
       <section className="demo-section">
@@ -223,7 +234,7 @@ useEffect(() => {
           </div>
 
           <textarea
-          className="code-editor-container"
+          className="code-editor"
           value={code}
           onChange={(e) => setCode(e.target.value)}
           />
@@ -252,37 +263,37 @@ useEffect(() => {
         <h2 className="section-title">Why Choose Evalytics-AI?</h2>
         <div className="benefits-grid">
           <div className="benefit-item">
-            <div className="benefit-icon">✅</div>
+            <div className="benefit-icon"><i class="fa-regular fa-circle-check"></i></div>
             <h3>AI-Powered Evaluations</h3>
             <p>Get detailed feedback on your code quality and performance</p>
           </div>
           
           <div className="benefit-item">
-            <div className="benefit-icon">✅</div>
+            <div className="benefit-icon"><i class="fa-regular fa-circle-check"></i></div>
             <h3>Instant Feedback & Reports</h3>
             <p>Real-time results with actionable insights</p>
           </div>
           
           <div className="benefit-item">
-            <div className="benefit-icon">✅</div>
+            <div className="benefit-icon"><i class="fa-regular fa-circle-check"></i></div>
             <h3>Adaptive Learning</h3>
             <p>Questions adjust to your skill level</p>
           </div>
           
           <div className="benefit-item">
-            <div className="benefit-icon">✅</div>
+            <div className="benefit-icon"><i class="fa-regular fa-circle-check"></i></div>
             <h3>Track Progress</h3>
             <p>Visualize your improvement over time</p>
           </div>
           
           <div className="benefit-item">
-            <div className="benefit-icon">✅</div>
+            <div className="benefit-icon"><i class="fa-regular fa-circle-check"></i></div>
             <h3>Resume Boost</h3>
             <p>Earn verifiable certificates</p>
           </div>
           
           <div className="benefit-item">
-            <div className="benefit-icon">✅</div>
+            <div className="benefit-icon"><i class="fa-regular fa-circle-check"></i></div>
             <h3>Developer-Focused UX</h3>
             <p>Built by developers, for developers</p>
           </div>
@@ -333,12 +344,12 @@ useEffect(() => {
       <section className="techstack-section">
         <h2 className="section-title">Powered By</h2>
         <div className="techstack-grid">
-          <div className="tech-item">React ⚛️</div>
-          <div className="tech-item">Node.js 🔗</div>
-          <div className="tech-item">OpenAI API 🤖</div>
+          <div className="tech-item">React <i class="fa-brands fa-react"></i></div>
+          <div className="tech-item">Node.js <i class="fa-brands fa-node-js"></i></div>
+          <div className="tech-item">OpenAI API</div>
           <div className="tech-item">PostgreSQL</div>
-          <div className="tech-item">Docker</div>
-          <div className="tech-item">Firebase</div>
+          <div className="tech-item">Docker <i class="fa-brands fa-docker"></i></div>
+          <div className="tech-item">Firebase <i class='bx bxl-firebase'></i></div>
         </div>
       </section>
 
@@ -367,9 +378,9 @@ useEffect(() => {
           </div>
           
           <div className="social-icons">
-            <a href="#"><span>📘</span></a>
-            <a href="#"><span>🐦</span></a>
-            <a href="#"><span>📸</span></a>
+            <a href="#"><span><i class="fa-brands fa-facebook"></i></span></a>
+            <a href="#"><span><i class="fa-brands fa-x-twitter"></i></span></a>
+            <a href="#"><span><i class="fa-brands fa-instagram"></i></span></a>
           </div>
         </div>
         
