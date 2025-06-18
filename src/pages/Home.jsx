@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Lottie from 'react-lottie';
 import animationData from '../assets/animation.json';
@@ -11,18 +11,18 @@ export default function Home() {
   const [typedText, setTypedText] = useState('');
   const fullText = "Level Up with AI-Based Code Testing & Exams";
   
-useEffect(() => {
-    let i = 0;
-    const typingInterval = setInterval(() => {
-      if (i < fullText.length) {
-        setTypedText(fullText.substring(0, i + 1));
-        i++;
-      } else {
-        clearInterval(typingInterval);
-      }
-    }, 50);
-    return () => clearInterval(typingInterval);
-  }, []);
+  useEffect(() => {
+      let i = 0;
+      const typingInterval = setInterval(() => {
+        if (i < fullText.length) {
+          setTypedText(fullText.substring(0, i + 1));
+          i++;
+        } else {
+          clearInterval(typingInterval);
+        }
+      }, 50);
+      return () => clearInterval(typingInterval);
+    }, []);
 
   const defaultOptions = {
     loop: true,
@@ -46,45 +46,140 @@ useEffect(() => {
       const { data } = await axios.post(
       'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false',
       { source_code: code, language_id: language },
-      {
-        headers: {
-          'x-rapidapi-key': import.meta.env.VITE_JUDGE0_API_KEY,
-          'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    const poll = async () => {
-      const res = await axios.get(
-        `https://judge0-ce.p.rapidapi.com/submissions/${data.token}?base64_encoded=false`,
         {
           headers: {
             'x-rapidapi-key': import.meta.env.VITE_JUDGE0_API_KEY,
             'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+            'Content-Type': 'application/json',
           },
         }
       );
 
-      if (res.data.status.id <= 2) {
-        setTimeout(poll, 1000);
-      } else {
-        setOutput(res.data.stdout || res.data.stderr || res.data.compile_output || 'No output');
+      const poll = async () => {
+        const res = await axios.get(
+          `https://judge0-ce.p.rapidapi.com/submissions/${data.token}?base64_encoded=false`,
+          {
+            headers: {
+              'x-rapidapi-key': import.meta.env.VITE_JUDGE0_API_KEY,
+              'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+            },
+          }
+        );
+
+        if (res.data.status.id <= 2) {
+          setTimeout(poll, 1000);
+        } else {
+          setOutput(res.data.stdout || res.data.stderr || res.data.compile_output || 'No output');
+          setIsSubmitting(false);
+        }
+      };
+
+      poll();
+    } catch (err) {
+        setOutput(`❌ Error: ${err.message}`);
         setIsSubmitting(false);
       }
-    };
+  };
 
-    poll();
-  } catch (err) {
-    setOutput(`❌ Error: ${err.message}`);
-    setIsSubmitting(false);
-  }
-};
+  const testimonials = [
+    {
+      text: 'Got my job after acing tests here!',
+      author: 'Aayush, Software Engineer',
+      photo: '../users/aayush.jpg',
+    },
+    {
+      text: 'Practiced C++ daily with Evalytics IDE',
+      author: 'Minal, CS Student',
+      photo: '../users/minal.webp',
+    },
+    {
+      text: 'The AI feedback helped me improve my Python skills dramatically',
+      author: 'Raj, Data Scientist',
+      photo: '../users/raj.jpg',
+    },
+    {
+      text: 'Evalytics helped me crack my first tech interview with confidence.',
+      author: 'Priya, Frontend Developer',
+      photo: '../users/priya.jpeg',
+    },
+    {
+      text: 'Mock tests here feel exactly like real interviews. Highly recommended!',
+      author: 'Sahil, Backend Engineer',
+      photo: '../users/sahil.jpg',
+    },
+    {
+      text: 'This platform made DSA finally click for me. Loved the explanations!',
+      author: 'Neha, Software Intern',
+      photo: '../users/neha.jpg',
+    },
+    {
+      text: 'I practiced daily with their Java compiler and saw huge improvements.',
+      author: 'Ankit, Java Developer',
+      photo: '../users/ankit.webp',
+    },
+    {
+      text: 'The UI is clean, fast, and perfect for serious prep.',
+      author: 'Riya, B.Tech Student',
+      photo: '../users/riya.gif',
+    },
+    {
+      text: 'Evalytics gave me the structured path I needed. No more confusion.',
+      author: 'Dev, Self-Taught Programmer',
+      photo: '../users/dev.jpg',
+    },
+    {
+      text: 'Their AI explained my mistakes better than any tutor.',
+      author: 'Tanvi, Full Stack Developer',
+      photo: '../users/tanvi.jpg',
+    },
+    {
+      text: 'Honestly, this app kept me consistent. And consistency got me hired.',
+      author: 'Arjun, Associate Software Engineer',
+      photo: '../users/arjun.jpg',
+    },
+    {
+      text: 'I loved competing with others in real-time challenges!',
+      author: 'Megha, Coding Enthusiast',
+      photo: '../users/megha.jpg',
+    },
+    {
+      text: 'I owe my internship to Evalytics. Period.',
+      author: 'Kunal, Final Year Student',
+      photo: '../users/kunal.jpg',
+    },
+  ];
+
+  const VISIBLE_COUNT = 5;
+  const [startIndex, setStartIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // We increment startIndex, and when it reaches the end, it wraps around.
+      // To make the visual loop seamless, we need to ensure enough "cloned" elements
+      // are present in the DOM for the transition.
+      setStartIndex((prev) => (prev + 1)); // Increment without modulo initially for visual effect
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const navigate = useNavigate();
+
+  const handleFooterLogoClick = (e) => {
+    e.preventDefault(); // prevent default anchor behavior
+    navigate("/#head"); // navigate to home with hash
+    setTimeout(() => {
+      const el = document.querySelector("#head");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 50); // slight delay to ensure element is in DOM
+  };
 
   return (
     <div className="home-container">
       {/* 1. Header / Navigation Bar */}
-      <header className="navbar">
+      <header className="navbar" id="head">
         <div className="nav-container">
           <div className="logo">
             <img src="/eai.png" alt="Logo" className="logo-icon" width={100} />
@@ -120,8 +215,8 @@ useEffect(() => {
             Practice. Test. Certify. Master coding through structured assessments and an intelligent IDE.
           </p>
           <div className="hero-cta">
-            <Link to="/practice" className="cta-primary">Start Coding</Link>
-            <Link to="/sample-test" className="cta-secondary">Take a Sample Test</Link>
+            <Link to="/login" className="cta-primary">Start Coding</Link>
+            <Link to="/tests" className="cta-secondary">Take a Sample Test</Link>
           </div>
         </div>
         <div className="lottie-container" style={{ maxWidth: 600, margin: '0 auto' }}>
@@ -144,7 +239,7 @@ useEffect(() => {
             <div className="offering-icon"><i class="fa-solid fa-laptop-code"></i></div>
             <h3>Practice IDE</h3>
             <p>Real-time online editor with hints & test cases. AI hints and code feedback. Save and track your practice history.</p>
-            <Link to="/practice" className="offering-btn">Explore</Link>
+            <Link to="/ide" className="offering-btn">Explore</Link>
           </div>
           
           <div className="offering-card">
@@ -322,20 +417,30 @@ useEffect(() => {
       {/* 9. Testimonials */}
       <section className="testimonials-section">
         <h2 className="section-title">What Developers Say</h2>
-        <div className="testimonials-grid">
-          <div className="testimonial-card">
-            <p className="testimonial-text">"Got my job after acing tests here!"</p>
-            <p className="testimonial-author">— Aayush, Software Engineer</p>
-          </div>
-          
-          <div className="testimonial-card">
-            <p className="testimonial-text">"Practiced C++ daily with Evalytics IDE"</p>
-            <p className="testimonial-author">— Minal, CS Student</p>
-          </div>
-          
-          <div className="testimonial-card">
-            <p className="testimonial-text">"The AI feedback helped me improve my Python skills dramatically"</p>
-            <p className="testimonial-author">— Raj, Data Scientist</p>
+        <div className="carousel-outer">
+          <div
+            className="carousel-track"
+            style={{
+              transform: `translateX(-${startIndex * (100 / VISIBLE_COUNT)}%)`,
+              transition: 'transform 0.6s ease-in-out'
+            }}
+            onTransitionEnd={() => {
+              if (startIndex >= testimonials.length) {
+                setStartIndex(0);
+              }
+            }}
+          >
+            {
+              [...testimonials, ...testimonials.slice(0, VISIBLE_COUNT -1)].map((testimonial, i) => {
+                return (
+                  <div className="testimonial-card" key={i}>
+                    <img className="testimonial-photo" src={testimonial.photo} alt={testimonial.author} />
+                    <p className="testimonial-text">"{testimonial.text}"</p>
+                    <p className="testimonial-author">— {testimonial.author}</p>
+                  </div>
+                );
+              })
+            }
           </div>
         </div>
       </section>
@@ -365,23 +470,30 @@ useEffect(() => {
       <footer className="main-footer">
         <div className="footer-content">
           <div className="footer-logo">
-            <span className="logo-icon">💻</span>
-            <span>Evalytics-AI</span>
+            <a to="#head" onClick={handleFooterLogoClick}>
+              <img src="/eai.png" alt="Logo" className="logo-icon" width={100} />
+            </a>
           </div>
-          
           <div className="footer-links">
             <Link to="/privacy">Privacy</Link>
             <Link to="/terms">Terms</Link>
             <Link to="/github">GitHub</Link>
             <Link to="/linkedin">LinkedIn</Link>
-            <a href="mailto:info@evalytics.ai">Contact</a>
+            <a href='mailto:avijitrajak@gmail.com'>Contact</a>
           </div>
           
           <div className="social-icons">
-            <a href="#"><span><i class="fa-brands fa-facebook"></i></span></a>
-            <a href="#"><span><i class="fa-brands fa-x-twitter"></i></span></a>
-            <a href="#"><span><i class="fa-brands fa-instagram"></i></span></a>
+            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
+              <span><i className="fa-brands fa-facebook"></i></span>
+            </a>
+            <a href="https://www.x.com" target="_blank" rel="noopener noreferrer">
+              <span><i className="fa-brands fa-x-twitter"></i></span>
+            </a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+              <span><i className="fa-brands fa-instagram"></i></span>
+            </a>
           </div>
+
         </div>
         
         <div className="copyright">
