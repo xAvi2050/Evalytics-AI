@@ -1,7 +1,32 @@
+:root {
+  --light-primary: #f0f2f5;
+  --dark-primary: #1a202c;
+  --dark-secondary: #2d3748;
+  --text-light: #2d3748;
+  --text-dark: #edf2f7;
+  --accent-blue: #3498db;
+  --accent-dark-blue: #2980b9;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif; /* Using Inter as per instructions */
+  background-color: var(--light-primary);
+  color: var(--text-light);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-theme {
+  background-color: var(--dark-primary);
+  color: var(--text-dark);
+}
+
 .auth-page {
   display: flex;
   height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Removed 'Segoe UI' to rely on 'Inter' from body, unless specifically needed for this page */
+  font-family: 'Inter', sans-serif; /* Consistent font */
+  overflow: auto; /* Allow scrolling for smaller screens */
 }
 
 .auth-half {
@@ -18,6 +43,12 @@
   flex-direction: column;
 }
 
+/* Dark theme adjustments for form-side background */
+.dark-theme .form-side {
+  background-color: var(--dark-primary);
+}
+
+
 .animation-side {
   background-color: var(--light-primary);
   flex-direction: column;
@@ -25,6 +56,11 @@
   justify-content: center;
   align-items: center;
   padding: 2rem;
+}
+
+/* Dark theme adjustments for animation-side background */
+.dark-theme .animation-side {
+  background-color: var(--dark-primary);
 }
 
 .animation-side .lottie {
@@ -35,12 +71,16 @@
 .switch-link {
   margin-top: 1.5rem;
   font-size: 1rem;
-  color: #2c3e50;
+  color: var(--text-light); /* Use theme variable */
   text-align: center;
 }
 
+.dark-theme .switch-link {
+  color: var(--text-dark); /* Adjust for dark theme */
+}
+
 .switch-link a {
-  color: #3498db;
+  color: var(--accent-blue);
   text-decoration: none;
   font-weight: 600;
 }
@@ -51,8 +91,8 @@
 
 .auth-container {
   width: 100%;
-  max-width: 400px;
-  padding: 2rem;
+  max-width: 480px; /* Increased max-width */
+  padding: 2.5rem; /* Increased padding */
   background-color: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
@@ -61,10 +101,21 @@
   align-items: center;
 }
 
+/* Dark theme adjustments for auth-container */
+.dark-theme .auth-container {
+  background-color: var(--dark-secondary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+
 .auth-title {
   font-size: 2rem;
   margin-bottom: 2rem;
-  color: #2c3e50;
+  color: var(--text-light); /* Use theme variable */
+}
+
+.dark-theme .auth-title {
+  color: var(--text-dark); /* Adjust for dark theme */
 }
 
 .auth-form {
@@ -75,22 +126,30 @@
 
 .auth-input {
   padding: 0.75rem 1rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.2rem; /* Consistent spacing */
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
   transition: border 0.3s;
+  background-color: white; /* Default light theme input background */
+  color: var(--text-light); /* Default light theme input text color */
+}
+
+.dark-theme .auth-input {
+  background-color: #3f4a5c; /* Darker background for inputs in dark theme */
+  border-color: #555; /* Adjust border color */
+  color: var(--text-dark); /* Adjust text color */
 }
 
 .auth-input:focus {
-  border-color: #3498db;
+  border-color: var(--accent-blue);
   outline: none;
 }
 
 .auth-button {
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  background-color: #3498db;
+  background-color: var(--accent-blue);
   color: white;
   border: none;
   border-radius: 8px;
@@ -100,7 +159,7 @@
 }
 
 .auth-button:hover {
-  background-color: #2980b9;
+  background-color: var(--accent-dark-blue);
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -116,11 +175,23 @@
   text-align: center;
 }
 
+.auth-message { /* New style for success messages */
+  color: #27ae60;
+  background-color: #e6f7ed;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #b7e0c9;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
 .password-strength {
   font-size: 0.9rem;
   margin-top: -0.5rem;
   margin-bottom: 1rem;
   font-weight: 500;
+  text-align: left; /* Align strength text to left */
 }
 
 .password-strength.weak {
@@ -133,4 +204,113 @@
 
 .password-strength.strong {
   color: #27ae60;
+}
+
+/* Styles for the new signup form fields */
+.name-inputs,
+.phone-inputs {
+  display: flex;
+  gap: 1rem; /* Space between inputs */
+  width: 100%;
+  margin-bottom: 1.2rem; /* Consistent spacing with other inputs */
+}
+
+/* Ensure the half-width inputs within these flex containers also get the consistent padding */
+.name-inputs .auth-input,
+.phone-inputs .auth-input {
+  /* This rule is important to override the default .auth-input margin-bottom */
+  margin-bottom: 0;
+}
+
+.name-inputs .half-width {
+  flex: 1; /* Distribute space equally */
+  min-width: 0; /* Allow shrinking below content size */
+}
+
+.phone-inputs .country-code {
+  flex: 0 0 100px; /* Fixed width for country code dropdown */
+  margin-right: 0; /* Remove default margin */
+  padding-right: 0.5rem; /* Adjust padding for dropdown arrow */
+}
+
+.phone-inputs .phone-number {
+  flex: 1; /* Take remaining space */
+}
+
+/* Checkbox and Terms styles */
+.show-password,
+.terms-checkbox {
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  margin-bottom: 1.2rem; /* Consistent spacing */
+  color: var(--text-light); /* Use theme variable */
+  text-align: left; /* Align text within the label */
+  width: 100%; /* Ensure it spans full width */
+}
+
+.dark-theme .show-password,
+.dark-theme .terms-checkbox {
+  color: var(--text-dark); /* Adjust for dark theme */
+}
+
+.show-password input[type="checkbox"],
+.terms-checkbox input[type="checkbox"] {
+  margin-right: 0.5rem;
+  /* Basic styling for checkbox */
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--accent-blue); /* Color the checkbox itself */
+  flex-shrink: 0; /* Prevent checkbox from shrinking */
+}
+
+.terms-checkbox a {
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+
+.terms-checkbox a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .auth-page {
+    flex-direction: column;
+    height: auto; /* Allow height to adjust */
+    min-height: 100vh; /* Ensure it takes at least full viewport height */
+  }
+
+  .auth-half {
+    padding: 1rem;
+  }
+
+  .animation-side {
+    display: none; /* Hide animation on smaller screens to save space */
+  }
+
+  .auth-container {
+    padding: 1.5rem;
+    margin: 1rem auto; /* Center with margin */
+    max-width: 90%; /* Adjust max-width for better fit */
+  }
+
+  .name-inputs,
+  .phone-inputs {
+    flex-direction: column; /* Stack inputs vertically on small screens */
+    gap: 0; /* Remove gap when stacked */
+  }
+
+  .name-inputs .auth-input,
+  .phone-inputs .auth-input {
+    margin-bottom: 1.2rem; /* Restore individual margin when stacked */
+  }
+
+  .phone-inputs .country-code {
+    flex: unset; /* Remove fixed width */
+    width: 100%; /* Full width */
+    margin-right: 0;
+  }
 }
