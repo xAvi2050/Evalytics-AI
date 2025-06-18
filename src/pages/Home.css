@@ -79,7 +79,6 @@ h1, h2, h3, h4 {
 /* 1. Navbar */
 .navbar {
   position: sticky;
-  top: 0;
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
   color: var(--white);
   padding: 1rem 0;

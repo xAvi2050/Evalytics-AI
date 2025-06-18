@@ -166,8 +166,8 @@ export default function Home() {
   const navigate = useNavigate();
 
   const handleFooterLogoClick = (e) => {
-    e.preventDefault(); // prevent default anchor behavior
-    navigate("/#head"); // navigate to home with hash
+    e.preventDefault();
+    navigate("/");
     setTimeout(() => {
       const el = document.querySelector("#head");
       if (el) {
@@ -470,9 +470,9 @@ export default function Home() {
       <footer className="main-footer">
         <div className="footer-content">
           <div className="footer-logo">
-            <a to="#head" onClick={handleFooterLogoClick}>
+            <Link to="/" onClick={handleFooterLogoClick}>
               <img src="/eai.png" alt="Logo" className="logo-icon" width={100} />
-            </a>
+            </Link>
           </div>
           <div className="footer-links">
             <Link to="/privacy">Privacy</Link>
