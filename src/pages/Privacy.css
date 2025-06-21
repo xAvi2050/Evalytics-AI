@@ -1,0 +1,99 @@
+/* Reset body and html margins */
+* {
+  box-sizing: border-box;
+  
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+
+.privacy-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* If you want it starting from top */
+  padding: 60px 20px; /* Control top/bottom padding */
+  background-color: black;
+  background-image: url('eai-square.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+/* Main container with better contrast and frosted-glass effect */
+.privacy-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: rgba(0, 0, 0, 0.65); /* Darker for better text contrast */
+  color: #f1f1f1;
+  font-family: 'Segoe UI', sans-serif;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  line-height: 1.7;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Headings */
+.privacy-container h1 {
+  font-size: 2.5rem;
+  color: #4daafc;
+  margin-bottom: 10px;
+}
+
+.privacy-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #ffffff;
+  border-left: 4px solid #4daafc;
+  padding-left: 12px;
+}
+
+/* Paragraphs and List Items */
+.privacy-container p,
+.privacy-container li {
+  font-size: 1rem;
+  color: #dcdcdc;
+  margin-bottom: 15px;
+}
+
+/* Links */
+.privacy-container a {
+  color: #4daafc;
+  text-decoration: none;
+}
+
+.privacy-container a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive for Mobile */
+@media (max-width: 768px) {
+  .privacy-page{
+    background-image: none;
+  }
+
+  .privacy-container {
+    margin: 30px 20px;
+    padding: 20px;
+  }
+
+  .privacy-container h1 {
+    font-size: 2rem;
+  }
+
+  .privacy-container h2 {
+    font-size: 1.3rem;
+  }
+
+  .privacy-container p,
+  .privacy-container li {
+    font-size: 0.95rem;
+  }
+}

@@ -1,4 +1,4 @@
-/* src/index.css */
+/* We are using CSS variables (a.k.a. custom properties) defined inside :root and [data-theme="dark"] */
 :root {
   --light-primary: #F5F5F5;
   --light-secondary: #FFFFFF;

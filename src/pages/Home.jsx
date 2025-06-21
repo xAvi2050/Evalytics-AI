@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Lottie from 'react-lottie';
-import animationData from '../assets/animation.json';
+import axios from 'axios'; // A promise-based HTTP library that helps to communicate with API over internet
+import Lottie from 'react-lottie'; // A library that allows you to render animations in your web applications
+import animationData from '../assets/animation.json'; // Importing the animation which is in JSON format
 import './Home.css';
 
 
 
 export default function Home() {
+  
+  const [menuOpen, setMenuOpen] = useState(false);
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+
   const [typedText, setTypedText] = useState('');
   const fullText = "Level Up with AI-Based Code Testing & Exams";
   
@@ -22,7 +26,7 @@ export default function Home() {
         }
       }, 50);
       return () => clearInterval(typingInterval);
-    }, []);
+  }, []);
 
   const defaultOptions = {
     loop: true,
@@ -34,7 +38,7 @@ export default function Home() {
   };
 
   const [code, setCode] = useState(`def reverse_string(s):\n    return s[::-1]\n\nprint(reverse_string("hello"))`);
-  const [language, setLanguage] = useState(71); // Python by default
+  const language = 71; // Python by default
   const [output, setOutput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -44,8 +48,8 @@ export default function Home() {
 
     try {
       const { data } = await axios.post(
-      'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false',
-      { source_code: code, language_id: language },
+        'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=false&wait=false',
+        { source_code: code, language_id: language },
         {
           headers: {
             'x-rapidapi-key': import.meta.env.VITE_JUDGE0_API_KEY,
@@ -154,10 +158,7 @@ export default function Home() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // We increment startIndex, and when it reaches the end, it wraps around.
-      // To make the visual loop seamless, we need to ensure enough "cloned" elements
-      // are present in the DOM for the transition.
-      setStartIndex((prev) => (prev + 1)); // Increment without modulo initially for visual effect
+      setStartIndex((prev) => (prev + 1)); 
     }, 1500);
 
     return () => clearInterval(interval);
@@ -185,23 +186,44 @@ export default function Home() {
             <img src="/eai.png" alt="Logo" className="logo-icon" width={100} />
             <span>Evalytics-AI</span>
           </div>
-          
+
+          {/* Desktop Links */}
           <nav className="nav-links">
             <Link to="/">Home</Link>
             <Link to="/tests">Tests</Link>
             <Link to="/ide">IDE Practice</Link>
             <Link to="/exams">Exams</Link>
             <Link to="/about">About</Link>
-            <Link to="/contact">Contact</Link>
+            <a href='mailto:avijitrajak@gmail.com'>Contact</a>
           </nav>
-          
+
           <div className="auth-buttons">
             <Link to="/login" className="login-btn">Login</Link>
             <Link to="/signup" className="signup-btn">Sign Up</Link>
           </div>
 
-          <button className="mobile-menu-btn">☰</button>
+          <button className="mobile-menu-btn" onClick={toggleMenu}>
+            ☰
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="mobile-menu">
+            <nav className="mobile-nav-links">
+              <Link to="/" onClick={toggleMenu}>Home</Link>
+              <Link to="/tests" onClick={toggleMenu}>Tests</Link>
+              <Link to="/ide" onClick={toggleMenu}>IDE Practice</Link>
+              <Link to="/exams" onClick={toggleMenu}>Exams</Link>
+              <Link to="/about" onClick={toggleMenu}>About</Link>
+              <Link to="/contact" onClick={toggleMenu}>Contact</Link>
+            </nav>
+            <div className="mobile-auth-buttons">
+              <Link to="/login" onClick={toggleMenu}>Login</Link>
+              <Link to="/signup" onClick={toggleMenu}>Sign Up</Link>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* 2. Hero Section */}
@@ -298,6 +320,8 @@ export default function Home() {
             { name: 'C', iconClass: 'fa-solid fa-c' }, 
             { name: 'JavaScript', iconClass: 'bxl-javascript' },
             { name: 'SQL', iconClass: 'bxs-data' },
+            { name: 'Go', iconClass: 'bxl-go-lang' },
+            { name: 'TypeScript', iconClass: 'bxl-typescript' },
           ].map((lang) => (
             <div key={lang.name} className="language-card">
               <div className="language-icon">
@@ -317,8 +341,6 @@ export default function Home() {
         </div>
         <p className="coming-soon">+ More languages coming soon</p>
       </section>
-
-
 
       {/* 6. Live Demo Section */}
       <section className="demo-section">
@@ -348,8 +370,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-
-        <p className="login-prompt">Sign in to save your progress and access more problems</p>
       </section>
 
 
