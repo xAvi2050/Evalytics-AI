@@ -2,7 +2,6 @@
   --light-primary: #f0f2f5;
   --dark-primary: #1a202c;
   --dark-secondary: #2d3748;
-  --text-light: #2d3748;
   --text-dark: #edf2f7;
   --accent-blue: #3498db;
   --accent-dark-blue: #2980b9;
@@ -12,7 +11,7 @@ body {
   margin: 0;
   font-family: 'Inter', sans-serif; /* Using Inter as per instructions */
   background-color: var(--light-primary);
-  color: var(--text-light);
+  color: var(--dark-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -71,7 +70,7 @@ body.dark-theme {
 .switch-link {
   margin-top: 1.5rem;
   font-size: 1rem;
-  color: var(--text-light); /* Use theme variable */
+  color: var(--dark-primary); /* Use theme variable */
   text-align: center;
 }
 
@@ -111,7 +110,7 @@ body.dark-theme {
 .auth-title {
   font-size: 2rem;
   margin-bottom: 2rem;
-  color: var(--text-light); /* Use theme variable */
+  color: var(--dark-primary); /* Use theme variable */
 }
 
 .dark-theme .auth-title {
@@ -132,7 +131,7 @@ body.dark-theme {
   font-size: 1rem;
   transition: border 0.3s;
   background-color: white; /* Default light theme input background */
-  color: var(--text-light); /* Default light theme input text color */
+  color: var(--dark-primary); /* Default light theme input text color */
 }
 
 .dark-theme .auth-input {
@@ -244,7 +243,7 @@ body.dark-theme {
   align-items: center;
   font-size: 0.95rem;
   margin-bottom: 1.2rem; /* Consistent spacing */
-  color: var(--text-light); /* Use theme variable */
+  color: var(--dark-primary); /* Use theme variable */
   text-align: left; /* Align text within the label */
   width: 100%; /* Ensure it spans full width */
 }
