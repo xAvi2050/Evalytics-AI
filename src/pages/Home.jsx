@@ -194,7 +194,7 @@ export default function Home() {
             <Link to="/ide">IDE Practice</Link>
             <Link to="/exams">Exams</Link>
             <Link to="/about">About</Link>
-            <a href='mailto:avijitrajak@gmail.com'>Contact</a>
+            <Link to="/contact">Contact</Link>
           </nav>
 
           <div className="auth-buttons">

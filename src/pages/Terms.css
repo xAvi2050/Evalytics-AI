@@ -1,78 +1,100 @@
+/* Reset and base layout */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 .terms-page {
-  background-color: #121212; /* deep dark background */
   min-height: 100vh;
-  padding-top: 60px;
-  padding-bottom: 60px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  padding: 60px 20px;
+  background-color: black;
+  background-image: url('eai-square.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
+/* Frosted-glass container */
 .terms-container {
-  max-width: 800px;
-  width: 90%;
-  background-color: #1e1e1e;
-  border-radius: 12px;
-  padding: 40px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  color: #e0e0e0;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: rgba(0, 0, 0, 0.65);
+  color: #f1f1f1;
+  font-family: 'Segoe UI', sans-serif;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  line-height: 1.7;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Headings */
 .terms-container h1 {
-  font-size: 34px;
-  margin-bottom: 24px;
-  color: #2998e2; /* accent-blue */
-  font-weight: 600;
-  border-bottom: 2px solid #2998e2;
-  padding-bottom: 8px;
-}
-
-.terms-container section {
-  margin-bottom: 32px;
+  font-size: 2.5rem;
+  color: #4daafc;
+  margin-bottom: 10px;
+  text-align: center;
+  border-bottom: 2px solid #4daafc;
+  padding-bottom: 10px;
 }
 
 .terms-container h2 {
-  font-size: 22px;
-  color: #ffffff;
+  font-size: 1.5rem;
   margin-bottom: 10px;
-  font-weight: 500;
+  color: #ffffff;
+  border-left: 4px solid #4daafc;
+  padding-left: 12px;
 }
 
-.terms-container p {
-  font-size: 16px;
-  line-height: 1.8;
-  color: #cfcfcf;
-  margin: 0;
+/* Paragraphs and list items */
+.terms-container p,
+.terms-container li {
+  font-size: 1rem;
+  color: #dcdcdc;
+  margin-bottom: 15px;
 }
 
+/* Links */
 .terms-container a {
-  color: #7ab8f5;
+  color: #4daafc;
   text-decoration: none;
-  font-weight: 500;
 }
 
 .terms-container a:hover {
   text-decoration: underline;
 }
 
-
 /* Responsive for Mobile */
 @media (max-width: 768px) {
+  .terms-page {
+    background-image: none;
+  }
+
   .terms-container {
+    margin: 30px 20px;
     padding: 20px;
   }
 
   .terms-container h1 {
-    font-size: 24px;
+    font-size: 2rem;
   }
 
   .terms-container h2 {
-    font-size: 18px;
+    font-size: 1.3rem;
   }
 
   .terms-container p,
   .terms-container li {
-    font-size: 14px;
+    font-size: 0.95rem;
   }
 }

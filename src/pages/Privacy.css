@@ -1,35 +1,39 @@
 /* Reset body and html margins */
 * {
   box-sizing: border-box;
-  
 }
+
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
 }
 
-
+/* Background setup */
 .privacy-page {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* If you want it starting from top */
-  padding: 60px 20px; /* Control top/bottom padding */
-  background-color: black;
-  background-image: url('eai-square.png');
+  align-items: flex-start;
+  padding: 60px 20px;
+  background-color: #000;
+
+  /* Updated background path */
+  background-image: url('/eai-square.png'); /* Use slash if image is in public folder */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+
+  /* Fallback in case image fails */
+  background-color: #0b0b0b;
 }
 
-
-/* Main container with better contrast and frosted-glass effect */
+/* Frosted-glass container */
 .privacy-container {
   max-width: 900px;
   margin: 0 auto;
   padding: 30px;
-  background-color: rgba(0, 0, 0, 0.65); /* Darker for better text contrast */
+  background-color: rgba(0, 0, 0, 0.65);
   color: #f1f1f1;
   font-family: 'Segoe UI', sans-serif;
   border-radius: 16px;
@@ -75,8 +79,9 @@ html, body {
 
 /* Responsive for Mobile */
 @media (max-width: 768px) {
-  .privacy-page{
+  .privacy-page {
     background-image: none;
+    background-color: #000;
   }
 
   .privacy-container {

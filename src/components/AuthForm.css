@@ -206,19 +206,11 @@ body.dark-theme {
 }
 
 /* Styles for the new signup form fields */
-.name-inputs,
-.phone-inputs {
+.name-inputs {
   display: flex;
   gap: 1rem; /* Space between inputs */
   width: 100%;
   margin-bottom: 1.2rem; /* Consistent spacing with other inputs */
-}
-
-/* Ensure the half-width inputs within these flex containers also get the consistent padding */
-.name-inputs .auth-input,
-.phone-inputs .auth-input {
-  /* This rule is important to override the default .auth-input margin-bottom */
-  margin-bottom: 0;
 }
 
 .name-inputs .half-width {
@@ -226,14 +218,24 @@ body.dark-theme {
   min-width: 0; /* Allow shrinking below content size */
 }
 
-.phone-inputs .country-code {
-  flex: 0 0 100px; /* Fixed width for country code dropdown */
-  margin-right: 0; /* Remove default margin */
-  padding-right: 0.5rem; /* Adjust padding for dropdown arrow */
+.phone-inputs {
+  display: flex;
+  gap: 1rem; /* Space between inputs */
+  width: 100%;
+  margin-bottom: 1.2rem; /* Consistent spacing with other inputs */
 }
 
-.phone-inputs .phone-number {
-  flex: 1; /* Take remaining space */
+.phone-input .auth-input .phone-number{
+  flex: 1; /* Distribute space equally */
+  width: 100%;
+}
+
+
+/* Ensure the half-width inputs within these flex containers also get the consistent padding */
+.name-inputs .auth-input,
+.phone-inputs .auth-input {
+  /* This rule is important to override the default .auth-input margin-bottom */
+  margin-bottom: 0;
 }
 
 /* Checkbox and Terms styles */

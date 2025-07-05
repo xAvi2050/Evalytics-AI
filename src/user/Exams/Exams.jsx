@@ -6,12 +6,6 @@ const FiLogIn = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height=
 
 
 const Exams = () => {
-  const handleLoginClick = (e) => {
-      // Prevents the link from navigating in the preview environment
-      // In your full app, you can remove this onClick handler.
-      e.preventDefault();
-      alert("This would navigate to the login page.");
-  };
 
   return (
     <div className="exam-page-container">
@@ -32,8 +26,8 @@ const Exams = () => {
       <div className="login-prompt-exam">
         <h2>Ready for the Real Challenge?</h2>
         <p>Log in to access official exams, track your progress, and earn certifications.</p>
-        <a href="/login" className="login-btn-exam" onClick={handleLoginClick}>
-          <FiLogIn /> Login to Start
+        <a href="/login" className="login-btn-exam">
+          Login to Start
         </a>
       </div>
     </div>

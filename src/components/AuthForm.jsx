@@ -46,7 +46,7 @@ export default function AuthForm({ type }) {
     const fullPhoneNumber = countryCode + phoneNumber;
     const phoneRegex = /^\+\d{1,3}\d{10}$/; // Example: +911234567890
     if (!phoneRegex.test(fullPhoneNumber)) {
-      return 'Please enter a valid 10-digit phone number with country code (e.g., +911234567890).';
+      return 'Please enter a valid 10-digit phone number with country code (e.g., +91 1234567890).';
     }
 
     // Username validation
@@ -142,8 +142,9 @@ export default function AuthForm({ type }) {
 
         if (response.ok) { // Check if the response status is 2xx (success)
           setMessage(data.message); // Display success message
-          // In a real app, you might store a JWT token here
-          // localStorage.setItem('token', data.token);
+          // Clear all form fields on successful login
+          setUsername('');
+          setPassword('');
 
           // Navigate to the dashboard, passing the username as a URL parameter
           navigate(`/dashboard/${data.user.username}`);
@@ -191,7 +192,7 @@ export default function AuthForm({ type }) {
               <input
                 className="auth-input half-width"
                 type="text"
-                placeholder="Surname"
+                placeholder="Last Name"
                 required
                 value={lastName}
                 onChange={e => setLastName(e.target.value)}
@@ -215,9 +216,9 @@ export default function AuthForm({ type }) {
                 value={countryCode}
                 onChange={e => setCountryCode(e.target.value)}
               >
-                <option value="+91">+91 (India)</option>
-                <option value="+1">+1 (USA/Canada)</option>
-                <option value="+44">+44 (UK)</option>
+                <option value="+91">+91</option>
+                <option value="+1">+1</option>
+                <option value="+44">+44</option>
                 {/* Add more country codes as needed */}
               </select>
               <input
