@@ -91,3 +91,38 @@
 #runbtn {
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  .editor-output-wrapper {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .code-editor,
+  .code-output {
+    height: auto;
+  }
+
+  .code-output {
+    max-height: 300px;
+  }
+
+  .ide-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ide-toolbar select,
+  .ide-toolbar input,
+  .ide-toolbar button {
+    width: 100%;
+  }
+
+  .code-output textarea {
+    width: 100%;
+  }
+
+  #runbtn {
+    margin-top: 0.5rem;
+  }
+}
