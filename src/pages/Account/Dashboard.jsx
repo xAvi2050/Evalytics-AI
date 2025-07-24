@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
-import { useUser } from '../utils/UserContext';
-import api from '../utils/api';
+import { useUser } from '../../utils/UserContext';
+import api from '../../utils/api';
 
 const Dashboard = () => {
   const location = useLocation();

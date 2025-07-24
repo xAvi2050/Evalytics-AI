@@ -7,7 +7,7 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Login from './pages/Authentication/Login';
 import Signup from './pages/Authentication/SignUp';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/Account/Dashboard';
 
 function App() {
   return (
