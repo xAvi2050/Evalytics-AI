@@ -1,38 +1,22 @@
-/* We are using CSS variables (a.k.a. custom properties) defined inside :root and [data-theme="dark"] */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
 :root {
-  --light-primary: #F5F5F5;
-  --light-secondary: #FFFFFF;
-  --light-accent: #0F3460;
-  --light-text: #1A1A2E;
-
-  --dark-primary: #1A1A2E;
-  --dark-secondary: #0F3460;
-  --dark-accent: #4FC3F7;
-  --dark-text: #F5F5F5;
-
-  --bg-primary: var(--light-primary);
-  --bg-secondary: var(--light-secondary);
-  --accent: var(--light-accent);
-  --text: var(--light-text);
-
-  --pure-white: #FFFFFF;
   --primary-dark: #1A1A2E;
   --primary-blue: #0F3460;
-}
-
-[data-theme="dark"] {
-  --bg-primary: var(--dark-primary);
-  --bg-secondary: var(--dark-secondary);
-  --accent: var(--dark-accent);
-  --text: var(--dark-text);
+  --primary-light: #F5F5F5;
+  --accent-blue: #2998e2;
 }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text);
-  transition: background-color 0.5s ease, color 0.5s ease;
+  font-family: 'Raleway', sans-serif;
 }
 
-html {
-  scroll-behavior: smooth;
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-10%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }

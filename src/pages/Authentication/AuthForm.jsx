@@ -1,105 +1,90 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './AuthForm.css';
+import { useUser } from '../../utils/UserContext';
 
 export default function AuthForm({ type }) {
-  // Common state for both login and signup
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [message, setMessage] = useState(''); // State to display success messages
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
-  // New state variables for signup form details
+  // Signup specific state
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [countryCode, setCountryCode] = useState('+91'); // Default to +91 for India
+  const [countryCode, setCountryCode] = useState('+91');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  // Define the base URL for your backend API
-  // IMPORTANT: Ensure this matches your backend server's address (e.g., http://localhost:5000)
-  const API_BASE_URL = 'http://localhost:5000/api';
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-  // Client-side validation for signup form fields
   const validateSignup = () => {
-    // Basic validations
     if (!firstName || !lastName || !email || !phoneNumber || !username || !password || !confirmPassword) {
       return 'Please fill in all required fields.';
     }
 
-    // Name validation
     if (firstName.length < 2 || lastName.length < 2) {
       return 'First Name and Last Name must be at least 2 characters long.';
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return 'Please enter a valid email address.';
     }
 
-    // Phone number validation (10 digits after country code)
     const fullPhoneNumber = countryCode + phoneNumber;
-    const phoneRegex = /^\+\d{1,3}\d{10}$/; // Example: +911234567890
+    const phoneRegex = /^\+\d{1,3}\d{10}$/;
     if (!phoneRegex.test(fullPhoneNumber)) {
       return 'Please enter a valid 10-digit phone number with country code (e.g., +91 1234567890).';
     }
 
-    // Username validation
-    const usernameRegex = /^[a-zA-Z0-9]{5,15}$/; // Username must be 5-15 characters, alphanumeric
+    const usernameRegex = /^[a-zA-Z0-9]{5,15}$/;
     if (!usernameRegex.test(username)) {
       return 'Username must be 5-15 characters long and contain only letters and numbers.';
     }
 
-    // Password validation (min 8 chars, 1 letter, 1 digit, 1 special char)
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
       return 'Password must be at least 8 characters long and include letters, numbers, and one special character.';
     }
 
-    // Password match validation
     if (password !== confirmPassword) {
       return 'Passwords do not match.';
     }
 
-    // Terms and Conditions validation
     if (!agreedToTerms) {
       return 'You must agree to the terms and conditions.';
     }
 
-    return ''; // No validation errors
+    return '';
   };
 
-  // Handles form submission for both login and signup
   const handleSubmit = async e => {
     e.preventDefault();
-    setError('');   // Clear any previous error messages
-    setMessage(''); // Clear any previous success messages
+    setError('');
+    setMessage('');
 
     if (type === 'signup') {
       const validationError = validateSignup();
       if (validationError) {
-        setError(validationError); // Display client-side validation error
+        setError(validationError);
         return;
       }
 
       try {
-        // Prepare signup data including new fields
         const signupData = {
           firstName,
           lastName,
           email,
-          phoneNumber: countryCode + phoneNumber, // Send full phone number
+          phoneNumber: countryCode + phoneNumber,
           username,
           password,
-          // agreedToTerms is implicitly checked by validation, no need to send if backend doesn't store
         };
 
-        // Make an actual API call to your backend's signup endpoint
         const response = await fetch(`${API_BASE_URL}/signup`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -108,9 +93,8 @@ export default function AuthForm({ type }) {
 
         const data = await response.json();
 
-        if (response.ok) { // Check if the response status is 2xx (success)
-          setMessage(data.message); // Display success message
-          // Clear all form fields on successful registration
+        if (response.ok) {
+          setMessage(data.message);
           setFirstName('');
           setLastName('');
           setEmail('');
@@ -122,7 +106,6 @@ export default function AuthForm({ type }) {
           setAgreedToTerms(false);
           setShowPassword(false);
         } else {
-          // Handle errors from the backend (e.g., username taken, validation errors)
           setError(data.message || 'Signup failed. Please try again.');
         }
       } catch (err) {
@@ -131,7 +114,6 @@ export default function AuthForm({ type }) {
       }
     } else if (type === 'login') {
       try {
-        // Make an actual API call to your backend's login endpoint
         const response = await fetch(`${API_BASE_URL}/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -140,16 +122,19 @@ export default function AuthForm({ type }) {
 
         const data = await response.json();
 
-        if (response.ok) { // Check if the response status is 2xx (success)
-          setMessage(data.message); // Display success message
-          // Clear all form fields on successful login
+        if (response.ok) {
+          // Store tokens in localStorage
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('refreshToken', data.refreshToken);
+          
+          // Update user context
+          setUser(data.user);
+          
+          setMessage(data.message);
           setUsername('');
           setPassword('');
-
-          // Navigate to the dashboard, passing the username as a URL parameter
-          navigate(`/dashboard/${data.user.username}`);
+          navigate('/dashboard');
         } else {
-          // Handle errors from the backend (e.g., invalid credentials)
           setError(data.message || 'Login failed. Invalid username or password.');
         }
       } catch (err) {
@@ -159,7 +144,6 @@ export default function AuthForm({ type }) {
     }
   };
 
-  // Determines and returns the password strength
   const getPasswordStrength = () => {
     if (password.length === 0) return '';
     if (password.length < 8) return 'Weak';
@@ -168,20 +152,29 @@ export default function AuthForm({ type }) {
   };
 
   return (
-    <div className="auth-container">
-      <h2 className="auth-title">{type === 'login' ? 'Login' : 'Sign Up'}</h2>
+    <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-xl shadow-md">
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-center">
+        {type === 'login' ? 'Login' : 'Sign Up'}
+      </h2>
 
-      {/* Display error messages */}
-      {error && <p className="auth-error">{error}</p>}
-      {/* Display success messages */}
-      {message && <p className="auth-message">{message}</p>}
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 rounded-md border border-red-200 dark:border-red-700">
+          {error}
+        </div>
+      )}
 
-      <form className="auth-form" onSubmit={handleSubmit}>
+      {message && (
+        <div className="mb-4 p-3 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-100 rounded-md border border-green-200 dark:border-green-700">
+          {message}
+        </div>
+      )}
+
+      <form className="space-y-4" onSubmit={handleSubmit}>
         {type === 'signup' && (
           <>
-            <div className="name-inputs">
+            <div className="flex space-x-4">
               <input
-                className="auth-input half-width"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
                 type="text"
                 placeholder="First Name"
                 required
@@ -190,7 +183,7 @@ export default function AuthForm({ type }) {
                 autoComplete="given-name"
               />
               <input
-                className="auth-input half-width"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
                 type="text"
                 placeholder="Last Name"
                 required
@@ -201,7 +194,7 @@ export default function AuthForm({ type }) {
             </div>
 
             <input
-              className="auth-input"
+              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
               type="email"
               placeholder="Email"
               required
@@ -210,19 +203,18 @@ export default function AuthForm({ type }) {
               autoComplete="email"
             />
 
-            <div className="phone-inputs">
+            <div className="flex space-x-4">
               <select
-                className="auth-input country-code"
+                className="w-1/4 p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
                 value={countryCode}
                 onChange={e => setCountryCode(e.target.value)}
               >
                 <option value="+91">+91</option>
                 <option value="+1">+1</option>
                 <option value="+44">+44</option>
-                {/* Add more country codes as needed */}
               </select>
               <input
-                className="auth-input phone-number"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
                 type="tel"
                 placeholder="Phone Number (10 digits)"
                 required
@@ -236,7 +228,7 @@ export default function AuthForm({ type }) {
         )}
 
         <input
-          className="auth-input"
+          className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
           type="text"
           placeholder="Username"
           required
@@ -246,7 +238,7 @@ export default function AuthForm({ type }) {
         />
 
         <input
-          className="auth-input"
+          className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
           type={showPassword ? 'text' : 'password'}
           placeholder="Password"
           required
@@ -255,9 +247,10 @@ export default function AuthForm({ type }) {
           autoComplete={type === 'login' ? 'current-password' : 'new-password'}
         />
 
-        <label className="show-password">
+        <label className="flex items-center text-gray-700 dark:text-gray-300">
           <input
             type="checkbox"
+            className="mr-2 h-4 w-4 text-blue-500 rounded border-gray-300 focus:ring-blue-500"
             checked={showPassword}
             onChange={() => setShowPassword(!showPassword)}
           />
@@ -265,7 +258,11 @@ export default function AuthForm({ type }) {
         </label>
 
         {type === 'signup' && password.length > 0 && (
-          <p className={`password-strength ${getPasswordStrength().toLowerCase()}`}>
+          <p className={`text-sm font-medium ${
+            getPasswordStrength() === 'Weak' ? 'text-red-500' :
+            getPasswordStrength() === 'Moderate' ? 'text-yellow-500' :
+            'text-green-500'
+          }`}>
             Strength: {getPasswordStrength()}
           </p>
         )}
@@ -273,7 +270,7 @@ export default function AuthForm({ type }) {
         {type === 'signup' && (
           <>
             <input
-              className="auth-input"
+              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white"
               type={showPassword ? 'text' : 'password'}
               placeholder="Rewrite Password"
               required
@@ -281,19 +278,26 @@ export default function AuthForm({ type }) {
               onChange={e => setConfirmPassword(e.target.value)}
               autoComplete="new-password"
             />
-            <label className="terms-checkbox">
+            <label className="flex items-center text-gray-700 dark:text-gray-300">
               <input
                 type="checkbox"
+                className="mr-2 h-4 w-4 text-blue-500 rounded border-gray-300 focus:ring-blue-500"
                 checked={agreedToTerms}
                 onChange={() => setAgreedToTerms(!agreedToTerms)}
                 required
               />
-              I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
+              I agree to the{' '}
+              <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline ml-1">
+                Terms & Conditions
+              </a>
             </label>
           </>
         )}
 
-        <button className="auth-button" type="submit">
+        <button
+          type="submit"
+          className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition duration-200 transform hover:-translate-y-0.5 shadow-md"
+        >
           {type === 'login' ? 'Login' : 'Sign Up'}
         </button>
       </form>

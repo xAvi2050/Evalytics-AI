@@ -1,10 +1,16 @@
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
+import { UserProvider } from './utils/UserContext';
 
-ReactDOM.createRoot(document.getElementById('root')).render(  // Boots up the React app
-  <BrowserRouter> {/* Wraps the app in React Router, enabling client-side routing */}
-    <App /> {/* Loads the main component (where all the routing happens) */}
-  </BrowserRouter>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <UserProvider>
+        <App />
+      </UserProvider>
+    </BrowserRouter>
+  </React.StrictMode>
 );

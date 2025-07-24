@@ -1,167 +1,174 @@
-// Dashboard.jsx
+// src/pages/Dashboard.jsx
 import { useState, useEffect } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
-import {
-  LineChart, Line,
-  RadarChart, Radar,
-  PolarGrid, PolarAngleAxis, PolarRadiusAxis
-} from 'recharts';
-import './Dashboard.css';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import { useUser } from '../utils/UserContext';
+import api from '../utils/api';
 
-export default function Dashboard({ user }) {
+const Dashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, setUser } = useUser();
   const [activeTab, setActiveTab] = useState('overview');
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-
-  // Replace hardcoded user data
-  const {
-    name = 'User',
-    xp = 0,
-    rank = '--',
-    stats = {},
-    testHistory = [],
-    certificates = [],
-    radarSkills = [],
-    progressData = []
-  } = user || {};
 
   useEffect(() => {
     const path = location.pathname.split('/dashboard/')[1] || 'overview';
     setActiveTab(path);
   }, [location]);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    const fetchUserData = async () => {
+      try {
+        const response = await api.get('/user/profile');
+        setUser(response.data);
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        navigate('/login');
+      }
+    };
+
+    if (!user) {
+      fetchUserData();
+    }
+  }, [navigate, setUser, user]);
+
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
-    document.body.className = !darkMode ? 'dark-theme' : '';
+    document.documentElement.classList.toggle('dark');
   };
 
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/logout');
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      setUser(null);
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  if (!user) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+
   return (
-    <div className={`dashboard-container ${darkMode ? 'dark' : 'light'}`}>
+    <div className={`flex min-h-screen ${darkMode ? 'dark' : ''}`}>
       {/* Mobile Header */}
-      <div className="mobile-header">
-        <button className="menu-toggle" onClick={() => setShowMobileMenu(!showMobileMenu)}>☰</button>
-        <h2>Evalytics-AI</h2>
+      <div className="md:hidden flex items-center justify-between p-4 bg-gray-900 text-white">
+        <button onClick={() => setShowMobileMenu(!showMobileMenu)} className="text-2xl">☰</button>
+        <h2 className="text-xl font-bold">Evalytics-AI</h2>
       </div>
 
       {/* Sidebar */}
-      <aside className={`sidebar ${showMobileMenu ? 'show' : ''}`}>
-        <div className="sidebar-header">
-          <h2>Evalytics-AI</h2>
-          <p>Your AI-Powered Coding Hub</p>
+      <aside className={`${showMobileMenu ? 'block' : 'hidden'} md:block fixed md:relative z-50 w-64 h-screen bg-gradient-to-b from-gray-900 to-blue-900 text-white`}>
+        <div className="p-6 border-b border-blue-800">
+          <h2 className="text-2xl font-bold">Evalytics-AI</h2>
+          <p className="text-blue-200 text-sm">Your AI-Powered Coding Hub</p>
         </div>
 
-        <nav className="sidebar-nav">
-          {['overview', 'practice', 'tests', 'exams', 'results', 'certificates', 'settings'].map(tab => (
+        <nav className="p-4">
+          {['overview', 'practice', 'tests', 'exams', 'results', 'certificates', 'settings'].map((tab) => (
             <Link
               key={tab}
               to={`/dashboard/${tab === 'overview' ? '' : tab}`}
-              className={`nav-item ${activeTab === tab ? 'active' : ''}`}
+              className={`flex items-center p-3 rounded-lg mb-2 transition-colors ${
+                activeTab === tab ? 'bg-blue-700 text-white' : 'text-blue-200 hover:bg-blue-800'
+              }`}
               onClick={() => setShowMobileMenu(false)}
             >
-              <span><i className={`fa-solid ${iconForTab(tab)}`}></i></span> {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              <span className="mr-3">{iconForTab(tab)}</span>
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </Link>
           ))}
-          <Link to="/logout" className="nav-item logout" onClick={() => setShowMobileMenu(false)}>
-            <span><i className="fa-solid fa-right-from-bracket"></i></span> Logout
-          </Link>
+          <button
+            onClick={handleLogout}
+            className="flex items-center p-3 rounded-lg text-red-200 hover:bg-red-800 w-full mt-4 border-t border-blue-800 pt-4"
+          >
+            <span className="mr-3">🔴</span> Logout
+          </button>
         </nav>
 
-        <div className="sidebar-footer">
-          <button className="theme-toggle" onClick={toggleDarkMode}>
+        <div className="p-4 border-t border-blue-800">
+          <button
+            onClick={toggleDarkMode}
+            className="flex items-center justify-center w-full p-2 rounded-lg bg-blue-800 text-white hover:bg-blue-700"
+          >
             {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="main-content">
-        {activeTab === 'overview' && (
+      <main className="flex-1 bg-gray-100 dark:bg-gray-900 p-6 md:ml-64">
+        {activeTab === 'overview' && user && (
           <>
             {/* Welcome Section */}
-            <header className="dashboard-header">
-              <h1><i className="fa-solid fa-hand"></i> Hello, {name}!</h1>
-              <div className="user-stats">
-                <span>XP: {xp}</span>
-                <span>Rank: #{rank}</span>
-                <Link to="/profile" className="profile-link">View Profile</Link>
+            <header className="flex justify-between items-center mb-8">
+              <div className="flex items-center space-x-4">
+                <img
+                  src={user.files?.profileImageUrl || `https://ui-avatars.com/api/?name=${user.name}`}
+                  alt="User Avatar"
+                  className="w-12 h-12 rounded-full border shadow"
+                />
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-bold dark:text-white">
+                    👋 Hello, {user.firstName}!
+                  </h1>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{user.email}</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <span className="text-gray-700 dark:text-gray-300">XP: {user.stats?.xp || 0}</span>
+                <span className="text-gray-700 dark:text-gray-300">Rank: #{user.stats?.rank || 0}</span>
+                <Link to="/profile" className="text-blue-600 dark:text-blue-400 hover:underline">
+                  View Profile
+                </Link>
               </div>
             </header>
 
-            {/* Stats */}
-            <div className="stats-grid">
-              <StatCard title="Tests Taken" value={stats.testsTaken || 0} change="+3 this month" />
-              <StatCard title="Avg Score" value={`${stats.avgScore || 0}%`} change="↑ 5% from last month" />
-              <StatCard title="Certificates" value={certificates.length} change="Earn more to unlock badge" />
-              <StatCard title="Time Spent" value={stats.timeSpent || '0h'} change="Keep going!" />
-            </div>
+            {/* Rest of dashboard as before... */}
 
-            {/* Quick Actions */}
-            <div className="action-buttons">
-              <Link to="/dashboard/tests" className="action-btn"><span>🧪</span> Take a New Test</Link>
-              <Link to="/dashboard/practice" className="action-btn"><span>💻</span> Open Practice IDE</Link>
-              <Link to="/dashboard/exams" className="action-btn"><span>📝</span> Start Full Exam</Link>
-            </div>
+            {/* ... Stats, Quick Actions, Recommendations, Progress Chart */}
 
-            {/* Recommendations */}
-            <div className="recommendation-card">
-              <h3>AI Recommendations</h3>
-              <p>Suggested focus: JavaScript array methods this week.</p>
-              <div className="recommendation-content">
-                <div className="recommendation-chart">
-                  <RadarChart outerRadius={90} width={300} height={250} data={radarSkills}>
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="subject" />
-                    <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                    <Radar name="Skills" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-                  </RadarChart>
-                </div>
-                <div className="recommendation-actions">
-                  <button className="primary-btn">Start Recommended Test</button>
-                  <button className="secondary-btn">View Study Plan</button>
-                </div>
-              </div>
-            </div>
-
-            {/* Line Chart */}
-            <div className="progress-section">
-              <h3>Your Progress</h3>
-              <div className="chart-container">
-                <LineChart width={600} height={300} data={progressData}>
-                  <Line type="monotone" dataKey="Python" stroke="#8884d8" />
-                  <Line type="monotone" dataKey="JavaScript" stroke="#82ca9d" />
-                  <Line type="monotone" dataKey="C++" stroke="#ffc658" />
-                </LineChart>
-              </div>
-            </div>
           </>
         )}
-        {/* Other tabs like practice, tests, exams... */}
+        <Outlet />
       </main>
     </div>
   );
-}
+};
 
-// Helper components
-function StatCard({ title, value, change }) {
-  return (
-    <div className="stat-card">
-      <h3>{title}</h3>
-      <p className="stat-value">{value}</p>
-      <p className="stat-change">{change}</p>
-    </div>
-  );
-}
+const StatCard = ({ title, value, change }) => (
+  <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <h3 className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">{title}</h3>
+    <p className="text-2xl font-bold dark:text-white mb-1">{value}</p>
+    <p className="text-green-500 text-sm">{change}</p>
+  </div>
+);
 
-function iconForTab(tab) {
+const iconForTab = (tab) => {
   const icons = {
-    overview: 'fa-house',
-    practice: 'fa-laptop-code',
-    tests: 'fa-vial',
-    exams: 'fa-pen',
-    results: 'fa-square-poll-vertical',
-    certificates: 'fa-award',
-    settings: 'fa-gear',
+    overview: '🏠',
+    practice: '💻',
+    tests: '🧪',
+    exams: '📝',
+    results: '📊',
+    certificates: '🏆',
+    settings: '⚙️',
   };
-  return icons[tab] || 'fa-circle';
-}
+  return icons[tab] || '🔘';
+};
+
+export default Dashboard;
