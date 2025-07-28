@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../utils/UserContext';
+import api from '../../utils/api';
 
 export default function AuthForm({ type }) {
   const [username, setUsername] = useState('');
@@ -11,7 +12,7 @@ export default function AuthForm({ type }) {
   const navigate = useNavigate();
   const { setUser } = useUser();
 
-  // Signup specific state
+  // Signup-specific fields
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -20,63 +21,50 @@ export default function AuthForm({ type }) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-
   const validateSignup = () => {
     if (!firstName || !lastName || !email || !phoneNumber || !username || !password || !confirmPassword) {
       return 'Please fill in all required fields.';
     }
-
     if (firstName.length < 2 || lastName.length < 2) {
       return 'First Name and Last Name must be at least 2 characters long.';
     }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return 'Please enter a valid email address.';
     }
-
     const fullPhoneNumber = countryCode + phoneNumber;
     const phoneRegex = /^\+\d{1,3}\d{10}$/;
     if (!phoneRegex.test(fullPhoneNumber)) {
-      return 'Please enter a valid 10-digit phone number with country code (e.g., +91 1234567890).';
+      return 'Please enter a valid 10-digit phone number with country code.';
     }
-
     const usernameRegex = /^[a-zA-Z0-9]{5,15}$/;
     if (!usernameRegex.test(username)) {
       return 'Username must be 5-15 characters long and contain only letters and numbers.';
     }
-
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
     if (!passwordRegex.test(password)) {
       return 'Password must be at least 8 characters long and include letters, numbers, and one special character.';
     }
-
     if (password !== confirmPassword) {
       return 'Passwords do not match.';
     }
-
     if (!agreedToTerms) {
       return 'You must agree to the terms and conditions.';
     }
-
     return '';
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setMessage('');
 
-    if (type === 'signup') {
-      const validationError = validateSignup();
-      if (validationError) {
-        setError(validationError);
-        return;
-      }
+    try {
+      if (type === 'signup') {
+        const validationError = validateSignup();
+        if (validationError) return setError(validationError);
 
-      try {
-        const signupData = {
+        const payload = {
           firstName,
           lastName,
           email,
@@ -85,62 +73,31 @@ export default function AuthForm({ type }) {
           password,
         };
 
-        const response = await fetch(`${API_BASE_URL}/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(signupData)
-        });
+        const res = await api.post('/signup', payload);
+        setMessage(res.data.message);
 
-        const data = await response.json();
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setCountryCode('+91');
+        setPhoneNumber('');
+        setUsername('');
+        setPassword('');
+        setConfirmPassword('');
+        setAgreedToTerms(false);
+        setShowPassword(false);
 
-        if (response.ok) {
-          setMessage(data.message);
-          setFirstName('');
-          setLastName('');
-          setEmail('');
-          setCountryCode('+91');
-          setPhoneNumber('');
-          setUsername('');
-          setPassword('');
-          setConfirmPassword('');
-          setAgreedToTerms(false);
-          setShowPassword(false);
-        } else {
-          setError(data.message || 'Signup failed. Please try again.');
-        }
-      } catch (err) {
-        console.error('Network error during signup:', err);
-        setError('Could not connect to the server. Please check your network or server status.');
+        navigate('/login');
+      } else {
+        const res = await api.post('/login', { username, password });
+        setUser(res.data.user);
+        setMessage(res.data.message);
+
+        navigate('/dashboard');
       }
-    } else if (type === 'login') {
-      try {
-        const response = await fetch(`${API_BASE_URL}/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          // Store tokens in localStorage
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('refreshToken', data.refreshToken);
-          
-          // Update user context
-          setUser(data.user);
-          
-          setMessage(data.message);
-          setUsername('');
-          setPassword('');
-          navigate('/dashboard');
-        } else {
-          setError(data.message || 'Login failed. Invalid username or password.');
-        }
-      } catch (err) {
-        console.error('Network error during login:', err);
-        setError('Could not connect to the server. Please check your network or server status.');
-      }
+    } catch (err) {
+      const msg = err?.response?.data?.detail || err?.response?.data?.message || 'Something went wrong';
+      setError(msg);
     }
   };
 

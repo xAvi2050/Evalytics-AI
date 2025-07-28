@@ -9,6 +9,16 @@ import Login from './pages/Authentication/Login';
 import Signup from './pages/Authentication/SignUp';
 import Dashboard from './pages/Account/Dashboard';
 
+// Dashboard Subpages
+import Overview from './pages/Dashboard/Overview';
+import Profile from './pages/Dashboard/Profile';
+import Practice from './pages/Dashboard/Practice';
+import Tests from './pages/Dashboard/Tests';
+import Exams from './pages/Dashboard/Exams';
+import Results from './pages/Dashboard/Results';
+import Certificates from './pages/Dashboard/Certificates';
+import Settings from './pages/Dashboard/Settings';
+
 function App() {
   return (
     <Routes>
@@ -20,7 +30,20 @@ function App() {
       <Route path="/terms" element={<Terms />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/dashboard/*" element={<Dashboard />} />
+
+      {/* Dashboard with nested routing */}
+      <Route path="/dashboard" element={<Dashboard />}>
+        <Route index element={<Overview />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="practice" element={<Practice />} />
+        <Route path="tests" element={<Tests />} />
+        <Route path="exams" element={<Exams />} />
+        <Route path="results" element={<Results />} />
+        <Route path="certificates" element={<Certificates />} />
+        <Route path="settings" element={<Settings />} />
+      </Route>
+
+      {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
