@@ -8,6 +8,7 @@ import Terms from './pages/Terms';
 import Login from './pages/Authentication/Login';
 import Signup from './pages/Authentication/SignUp';
 import Dashboard from './pages/Account/Dashboard';
+import ExamEnvironment from './pages/Account/ExamEnvironment';
 
 // Dashboard Subpages
 import Overview from './pages/Dashboard/Overview';
@@ -30,7 +31,8 @@ function App() {
       <Route path="/terms" element={<Terms />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-
+      <Route path="/exam/:examId" element={<ExamEnvironment />} />
+      
       {/* Dashboard with nested routing */}
       <Route path="/dashboard" element={<Dashboard />}>
         <Route index element={<Overview />} />
@@ -42,7 +44,7 @@ function App() {
         <Route path="certificates" element={<Certificates />} />
         <Route path="settings" element={<Settings />} />
       </Route>
-
+      
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

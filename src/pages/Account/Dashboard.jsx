@@ -1,111 +1,94 @@
-import { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../../utils/UserContext';
+import { useEffect } from 'react';
 import api from '../../utils/api';
 
-const TABS = [
-  { name: "overview", icon: "🏠" },
-  { name: "profile", icon: "👤" },
-  { name: "practice", icon: "💻" },
-  { name: "tests", icon: "🧪" },
-  { name: "exams", icon: "📝" },
-  { name: "results", icon: "📊" },
-  { name: "certificates", icon: "🏆" },
-  { name: "settings", icon: "⚙️" },
-];
+// Import icons from lucide-react
+import { 
+  LayoutDashboard, 
+  UserCircle, 
+  Code, 
+  ClipboardCheck, 
+  FileText, 
+  BarChart3, 
+  Award, 
+  Settings, 
+  LogOut 
+} from 'lucide-react';
 
 const Dashboard = () => {
-  const location = useLocation();
+  const { user, loading } = useUser();
   const navigate = useNavigate();
-  const { user, setUser } = useUser();
-  const [activeTab, setActiveTab] = useState('overview');
-  const [darkMode, setDarkMode] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
-
-  // Sync dark mode from localStorage on load
-  useEffect(() => {
-    const isDark = localStorage.getItem('theme') === 'dark';
-    setDarkMode(isDark);
-    document.documentElement.classList.toggle('dark', isDark);
-  }, []);
-
-  const toggleDarkMode = () => {
-    const isDark = !darkMode;
-    setDarkMode(isDark);
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    document.documentElement.classList.toggle('dark', isDark);
-  };
+  const location = useLocation();
+  const activeTab = location.pathname.split('/')[2] || 'overview';
 
   useEffect(() => {
-    const path = location.pathname.split('/dashboard/')[1] || 'overview';
-    setActiveTab(path);
-  }, [location]);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await api.get("/user/profile"); // cookie-based auth
-        setUser(response.data);
-      } catch (err) {
-        console.error("User not authenticated:", err?.response?.data?.detail);
-        // Don't navigate unless you're sure user is not logging in
-      }
-    };
-
-    if (!user) fetchUserData();
-  }, [user, setUser]);
+    if (!loading && !user) {
+      navigate('/login');
+    }
+  }, [user, loading, navigate]);
 
   const handleLogout = async () => {
     try {
-      await api.post('/logout'); // 🔐 Clears cookie on backend
-      setUser(null);
+      await api.post('/logout');
       navigate('/login');
-    } catch (err) {
-      console.error('Logout failed:', err);
+    } catch (error) {
+      console.error("Logout failed", error);
     }
   };
 
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen bg-gray-900 text-white">Loading Dashboard...</div>;
+  }
+
+  const navItems = [
+    { name: 'Overview', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
+    { name: 'Profile', path: '/dashboard/profile', icon: <UserCircle size={20} /> },
+    { name: 'Practice', path: '/dashboard/practice', icon: <Code size={20} /> },
+    { name: 'Tests', path: '/dashboard/tests', icon: <ClipboardCheck size={20} /> },
+    { name: 'Exams', path: '/dashboard/exams', icon: <FileText size={20} /> },
+    { name: 'Results', path: '/dashboard/results', icon: <BarChart3 size={20} /> },
+    { name: 'Certificates', path: '/dashboard/certificates', icon: <Award size={20} /> },
+  ];
+
   return (
-    <div className={`flex min-h-screen ${darkMode ? 'dark' : ''}`}>
+    <div className="flex h-screen bg-gray-900 text-gray-200 font-sans">
       {/* Sidebar */}
-      <aside className={`fixed z-50 md:relative w-64 h-screen bg-gradient-to-b from-gray-900 to-blue-900 text-white ${showMobileMenu ? 'block' : 'hidden'} md:block`}>
-        <div className="p-6 border-b border-blue-800">
-          <h2 className="text-2xl font-bold">Evalytics-AI</h2>
-          <p className="text-blue-200 text-sm">AI-Powered Coding Hub</p>
+      <aside className="w-64 flex-shrink-0 bg-gray-800 p-4 flex flex-col">
+        <div className="text-center mb-10">
+          <h1 className="text-2xl font-bold text-white">Evalytics-AI</h1>
+          <p className="text-sm text-blue-300">AI-Powered Coding Hub</p>
         </div>
-        <nav className="p-4">
-          {TABS.map(({ name, icon }) => (
+        <nav className="flex-grow">
+          {navItems.map(item => (
             <Link
-              key={name}
-              to={`/dashboard/${name === 'overview' ? '' : name}`}
+              key={item.name}
+              to={item.path}
               className={`flex items-center p-3 rounded-lg mb-2 transition-colors ${
-                activeTab === name ? 'bg-blue-700 text-white' : 'text-blue-200 hover:bg-blue-800'
+                activeTab === item.name.toLowerCase() || (item.name === 'Overview' && activeTab === 'overview')
+                  ? 'bg-blue-600 text-white' 
+                  : 'hover:bg-gray-700'
               }`}
-              onClick={() => setShowMobileMenu(false)}
             >
-              <span className="mr-3">{icon}</span>
-              {name.charAt(0).toUpperCase() + name.slice(1)}
+              {item.icon}
+              <span className="ml-3">{item.name}</span>
             </Link>
           ))}
-          <button
-            onClick={handleLogout}
-            className="flex items-center p-3 text-red-200 hover:bg-red-800 w-full mt-4 border-t border-blue-800 pt-4"
-          >
-            🔴 Logout
-          </button>
         </nav>
-        <div className="p-4 border-t border-blue-800">
-          <button
-            onClick={toggleDarkMode}
-            className="flex items-center justify-center w-full p-2 rounded-lg bg-blue-800 text-white hover:bg-blue-700"
-          >
-            {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+        <div>
+          <Link to="/dashboard/settings" className={`flex items-center p-3 rounded-lg mb-2 transition-colors ${activeTab === 'settings' ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`}>
+            <Settings size={20} />
+            <span className="ml-3">Settings</span>
+          </Link>
+          <button onClick={handleLogout} className="flex items-center p-3 rounded-lg w-full text-red-400 hover:bg-red-900/50 transition-colors">
+            <LogOut size={20} />
+            <span className="ml-3">Logout</span>
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-gray-100 dark:bg-gray-900 p-6 md:ml-64">
+      <main className="flex-1 p-8 overflow-y-auto">
         <Outlet />
       </main>
     </div>
