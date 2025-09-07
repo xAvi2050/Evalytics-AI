@@ -5,37 +5,46 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.routers import auth, exams, practice, tests
 from backend.database import db
 
-app = FastAPI()
+app = FastAPI(title="Evalytics-AI Backend")
 
+# --------------------------
 # CORS Middleware
+# --------------------------
+# Allows frontend at localhost:5173 to call this backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173"],  # frontend URL
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["*"],  # allow POST, GET, OPTIONS, etc.
     allow_headers=["*"],
 )
 
-# Include routers
+# --------------------------
+# Include Routers
+# --------------------------
+# Each router has its own prefix, e.g., exams.router -> /api/exams
 app.include_router(auth.router)
 app.include_router(exams.router)
 app.include_router(practice.router)
 app.include_router(tests.router)
 
+# --------------------------
+# Startup / Shutdown Events
+# --------------------------
 @app.on_event("startup")
 async def startup_db_client():
-    # You can add logic here to connect to the DB, if not already done
-    # Or to seed data
     print("FastAPI application starting up...")
-    # Example of seeding data
+    # Example: Seed exams if collection is empty
     if await db["exams"].count_documents({}) == 0:
-        print("Seeding exams...")
-        # Add seed data logic here as in your original file
+        print("Seeding exams...")  # Add seed logic here if needed
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
     print("FastAPI application shutting down...")
 
+# --------------------------
+# Root Endpoint
+# --------------------------
 @app.get("/")
 def read_root():
     return {"message": "Welcome to Evalytics-AI Backend"}

@@ -22,6 +22,7 @@ exams_collection = db["exams"]
 practice_collection = db["practice_questions"]
 tests_collection = db["tests"]
 sessions_collection = db["exam_sessions"]
+results_collection = db["results"]
 
 async def get_db():
     return db

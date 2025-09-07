@@ -9,6 +9,7 @@ import Login from './pages/Authentication/Login';
 import Signup from './pages/Authentication/SignUp';
 import Dashboard from './pages/Account/Dashboard';
 import ExamEnvironment from './pages/Account/ExamEnvironment';
+import TestEnvironment from './pages/Account/TestEnvironment';
 
 // Dashboard Subpages
 import Overview from './pages/Dashboard/Overview';
@@ -33,7 +34,8 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/exam/:examId" element={<ExamEnvironment />} />
-      
+      <Route path="/test/:testId" element={<TestEnvironment />} />
+
       {/* Dashboard with nested routing */}
       <Route path="/dashboard" element={<Dashboard />}>
         <Route index element={<Overview />} />

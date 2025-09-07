@@ -172,19 +172,30 @@ const ExamEnvironment = () => {
     };
 
     const handleSubmitExam = useCallback(async (isAutoSubmit = false) => {
-        if (!sessionId) return;
-        
+        if (!sessionId) {
+            alert("Exam session not initialized. Cannot submit.");
+            return;
+        }
+
         clearInterval(intervalsRef.current.proctoring);
         clearInterval(intervalsRef.current.timer);
         window.onbeforeunload = null;
-    
+
         try {
-            await api.post('/exams/submit', { session_id: sessionId, answers });
-            if (!isAutoSubmit) alert("Exam submitted successfully!");
+            console.log("Submitting exam:", { sessionId, answers });
+
+            // FIXED: Send session_id in the request body
+            const { data } = await api.post('/exams/submit', { 
+                session_id: sessionId, 
+                answers: answers 
+            });
+
+            if (!isAutoSubmit) alert(`Exam submitted successfully! Score: ${data.score}%`);
             navigate('/dashboard/results');
         } catch (error) {
-            console.error("Failed to submit exam:", error);
-            if (!isAutoSubmit) alert(`There was an error submitting your exam: ${error.response?.data?.detail || error.message}`);
+            console.error("Failed to submit exam:", error.response?.data || error.message);
+            const errorMessage = error.response?.data?.detail || error.response?.data?.message || 'Failed to submit exam.';
+            if (!isAutoSubmit) alert(`Error submitting exam: ${errorMessage}`);
         }
     }, [sessionId, answers, navigate]);
 
@@ -202,40 +213,56 @@ const ExamEnvironment = () => {
         loadModel();
     }, []);
 
+    // --- Exam start effect ---
     useEffect(() => {
         if (!examStarted) return;
+
         const startExamFlow = async () => {
             setLoading(true);
             try {
-                const [examRes, sessionRes] = await Promise.all([api.get(`/exams/${examId}`), api.post(`/exams/start/${examId}`)]);
+                const [examRes, sessionRes] = await Promise.all([
+                    api.get(`/exams/${examId}`),
+                    api.post(`/exams/start/${examId}`)
+                ]);
+
+                console.log("Exam data:", examRes.data);
+                console.log("Start exam response:", sessionRes.data);
+
+                if (!sessionRes.data?.session_id) {
+                    throw new Error("Session ID not returned from backend.");
+                }
+
                 setExam(examRes.data);
                 setTimeLeft(examRes.data.duration_minutes * 60);
                 setSessionId(sessionRes.data.session_id);
+
                 const initialStatuses = {};
                 examRes.data.questions.forEach((_, index) => {
                     initialStatuses[index] = index === 0 ? 'notAnswered' : 'notVisited';
                 });
                 setQuestionStatuses(initialStatuses);
             } catch (err) {
+                console.error(err);
                 setError("Could not start the exam.");
             } finally {
                 setLoading(false);
             }
         };
+
         startExamFlow();
     }, [examId, examStarted]);
 
+    // --- Timer effect (run only after sessionId is ready) ---
     useEffect(() => {
-        if (!sessionId) return;
-        
+        if (!sessionId) return; // do not run timer/proctoring until session exists
+
         const runProctoring = async () => {
             if (webcamRef.current?.video?.readyState === 4 && modelRef.current) {
                 const predictions = await modelRef.current.detect(webcamRef.current.video);
                 const personCount = predictions.filter(p => p.class === 'person').length;
-                
                 const flagTime = new Date().toLocaleTimeString();
                 if (personCount === 0) setProctoringFlags(prev => [...prev, `${flagTime}: No person detected.`]);
-                else if (personCount > 1) setProctoringFlags(prev => [...prev, `${flagTime}: Multiple people (${personCount}) detected.`]);
+                else if (personCount > 1) setProctoringFlags(prev => [...prev, `${flagTime}: Multiple people detected (${personCount}).`]);
             }
         };
 
@@ -249,9 +276,9 @@ const ExamEnvironment = () => {
                 return prevTime - 1;
             });
         }, 1000);
-        
+
         intervalsRef.current.proctoring = setInterval(runProctoring, 8000);
-        
+
         window.onbeforeunload = (e) => {
             handleSubmitExam(true);
             e.preventDefault();

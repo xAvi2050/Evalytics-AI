@@ -1,4 +1,4 @@
-# python -m backend.seed_data
+# python -m backend.seed_data_exams
 
 import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
