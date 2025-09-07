@@ -16,6 +16,7 @@ import Profile from './pages/Dashboard/Profile';
 import Practice from './pages/Dashboard/Practice';
 import Tests from './pages/Dashboard/Tests';
 import Exams from './pages/Dashboard/Exams';
+import Interview from './pages/Dashboard/Interview';
 import Results from './pages/Dashboard/Results';
 import Certificates from './pages/Dashboard/Certificates';
 import Settings from './pages/Dashboard/Settings';
@@ -40,6 +41,7 @@ function App() {
         <Route path="practice" element={<Practice />} />
         <Route path="tests" element={<Tests />} />
         <Route path="exams" element={<Exams />} />
+        <Route path="interview" element={<Interview />} />
         <Route path="results" element={<Results />} />
         <Route path="certificates" element={<Certificates />} />
         <Route path="settings" element={<Settings />} />

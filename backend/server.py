@@ -1,3 +1,5 @@
+# uvicorn backend.server:app --reload --port 5000
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.routers import auth, exams, practice, tests
