@@ -1,8 +1,9 @@
-# uvicorn backend.server:app --reload --port 5000
+# backend/server.py
+# uvicorn backend.main:app --reload --port 5000
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routers import auth, exams, practice, tests
+from backend.routers import auth, exams, practice, tests, interview
 from backend.database import db
 
 app = FastAPI(title="Evalytics-AI Backend")
@@ -10,23 +11,24 @@ app = FastAPI(title="Evalytics-AI Backend")
 # --------------------------
 # CORS Middleware
 # --------------------------
-# Allows frontend at localhost:5173 to call this backend
+# Allow frontend at localhost:5173 and handle credentials
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # frontend URL
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
-    allow_methods=["*"],  # allow POST, GET, OPTIONS, etc.
+    allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]  # ADD THIS LINE
 )
 
 # --------------------------
 # Include Routers
 # --------------------------
-# Each router has its own prefix, e.g., exams.router -> /api/exams
 app.include_router(auth.router)
 app.include_router(exams.router)
 app.include_router(practice.router)
 app.include_router(tests.router)
+app.include_router(interview.router)
 
 # --------------------------
 # Startup / Shutdown Events
@@ -34,9 +36,9 @@ app.include_router(tests.router)
 @app.on_event("startup")
 async def startup_db_client():
     print("FastAPI application starting up...")
-    # Example: Seed exams if collection is empty
-    if await db["exams"].count_documents({}) == 0:
-        print("Seeding exams...")  # Add seed logic here if needed
+    # Check if interviews collection exists, seed if empty
+    if await db["interviews"].count_documents({}) == 0:
+        print("Interviews collection is empty - consider seeding data")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

@@ -185,3 +185,15 @@ async def submit_exam_and_grade(submission: SubmissionRequest, current_user: dic
     )
 
     return {"success": True, "message": "Exam submitted and graded successfully.", "score": result_doc["score"]}
+
+@router.get("/user/results", response_model=List[dict])
+async def get_user_exam_results(current_user: dict = Depends(utils.get_current_user)):
+    results = await database.results_collection.find(
+        {"user_id": str(current_user["_id"])}
+    ).to_list(length=50)
+    
+    for result in results:
+        result["_id"] = str(result["_id"])
+        result["type"] = "exam"
+    
+    return results
